@@ -111,7 +111,7 @@ class Visitor:
 
     @the_exp.register
     def the_chr(self, n: ChrExpr):
-        return r"#\{}".format(n.leaf.str)
+        return Symbol(r"#\{}".format(n.leaf.str))
 
     @the_exp.register
     def the_str(self, n: StrExpr):
@@ -142,7 +142,7 @@ class Visitor:
 
     @the_case.register
     def the_chr(self, n: ChrCase):
-        return r"#\{}".format(n.leaf.str)
+        return Symbol(r"#\{}".format(n.leaf.str))
 
     @the_case.register
     def the_str(self, n: StrCase):
