@@ -1,0 +1,76 @@
+START : <BOF> Top <EOF>;
+Top   : !stmts=Stmts -> Top(list(stmts));
+
+Stmts    : !a=Stmt          -> Cons(a, nil);
+Stmts    : !a=Stmt !b=Stmts -> Cons(a, b);
+
+Stmt  : !it=(Let | Do | Open) -> it;
+
+Do    : 'do' !exp=Exp                    -> Do(exp);
+Let   : 'let' !ident=Id '=' !exp=Exp     -> Let(ident, exp);
+
+Open  : 'open' !ident=Id                  -> OpenId(ident);
+Open  : 'open' !string=<str>             -> OpenString(MKStr(string));
+
+Exp   : !it=(App | LetExp) -> it;
+
+CommaExps : [CommaExps ','] Exp;
+
+LetExp : !let=Let 'in' !exp=Exp                  -> LetExp(let, exp);
+
+App     : !a=AtomExp                               -> a;
+App     : !f=App '(' !args=CommaExps ')'           -> App(f, MKLRCommaList(args));
+App     : !f=App '(' ')'                           -> App(f, Tuple0);
+App     : !f=App !arg=Lit                           -> App(f, Tuple1(arg));
+
+AtomExp : !it=(Lam | Match | Nest)                  -> it;
+
+Lam     : 'fn' '(' !args=CommaIds ')' '->' !exp=Exp ['end'] -> Lam(MKLRCommaList(args), exp);
+Lam     : 'fn' !arg=Id '->' !exp=Exp ['end']                 -> Lam(Tuple1(arg), exp);
+Lam     : 'fn' '(' ')' '->' !exp=Exp ['end']                -> Lam(Tuple0, exp);
+
+Id      : !a=<identifier>  -> MKIdent(a);
+Ids     : !hd=Id           -> Cons(hd, nil);
+Ids     : !hd=Id !tl=Ids   -> Cons(hd, tl);
+CommaIds  : [CommaIds ','] Id;
+
+ChrExpr : !a=<chr>       -> ChrExpr(MKStr(a));
+NumExpr : !a=<number>    -> NumExpr(MKNum(a));
+StrExpr : !a=<str>       -> StrExpr(MKStr(a));
+
+Nest   : '(' !hd=Exp ')'                   -> hd;
+Nest   : !hd=Lit                           -> hd;
+
+Lit     : !a=(Id | NumExpr | StrExpr | ChrExpr | List) -> a;
+
+List   : '[' !a=CommaExps 'with' !tl=Case ']' -> List(MKLRCommaList(a), tl);
+List   : '[' !a=CommaExps ']'              -> List(MKLRCommaList(a), none);
+List   : '[' ']'                           -> List(Tuple0, none);
+
+Match : "match" !exp=Exp "with" !cases=CaseExps ['end']
+      -> Match(exp, MKLRList(cases));
+
+CaseExps   : [CaseExps] CaseExp;
+
+CaseExp    : '|' !case=Case '->' !exp=Exp -> Tuple3(case, none, exp);
+CaseExp    : '|' !case=Case 'when' !guard=Exp '->' !exp=Exp -> Tuple3(case, guard, exp);
+
+Case       : !a=OrCase -> MKOrCase(MKLRCommaList(a));
+OrCase     : [OrCase '|'] AndCaseRoot;
+
+AndCaseRoot : !a=AndCase -> MKAndCase(MKLRCommaList(a));
+AndCase     : [AndCase '&'] AtomCase;
+
+CommaCases : [CommaCases ','] Case;
+
+AtomCase    : !a=(NumCase | ChrCase | StrCase | ListCase | NestCase | Id) -> a;
+
+ChrCase    : !s=<chr>      -> ChrCase(MKStr(s));
+NumCase    : !n=<number>   -> NumCase(MKNum(n));
+StrCase    : !s=<str>      -> StrCase(MKStr(s));
+
+ListCase   : '[' !a=CommaCases 'with' !tl=Case ']' -> ListCase(MKLRCommaList(a), tl);
+ListCase   : '[' !a=CommaCases ']'              -> ListCase(MKLRCommaList(a), none);
+ListCase   : '[' ']'                            -> ListCase(Tuple0, none);
+
+NestCase  : '(' !hd=Case ')' -> hd;

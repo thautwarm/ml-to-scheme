@@ -1,0 +1,37 @@
+abc AST;
+abc Leaf(AST);
+
+data Ident(Leaf) ident:str colno:int lineno:int;
+data Chr(Leaf) chr:chr colno:int lineno:int;
+data Str(Leaf) str:str colno:int lineno:int;
+data Num(Leaf) num:object colno:int lineno:int;
+
+abc Stmt(AST);
+abc Exp(AST);
+abc Case(AST);
+
+data Top(AST) stmts:t.List[Stmt];
+
+data Let(Stmt) ident:Ident exp:Exp;
+data OpenString(Stmt) path:Str;
+data OpenId(Stmt) ident:Ident;
+data Do(Stmt) exp:Exp;
+
+data LetExp(Exp) stmt:Let exp:Exp;
+data App(Exp) f:Exp args:t.List[Exp];
+data Lam(Exp) args:t.List[Ident] body:Exp;
+data Match(Exp) on:Exp cases:t.List[t.Tuple[Case, Exp, Exp]];
+
+data ChrExpr(Exp) leaf:Chr;
+data NumExpr(Exp) leaf:Num;
+data StrExpr(Exp) leaf:Str;
+
+data List(Exp) elts:t.List[Exp] tl:t.Optional[Exp];
+
+data ChrCase(Case) leaf:Chr;
+data NumCase(Case) leaf:Num;
+data StrCase(Case) leaf:Str;
+
+data ListCase(Case) elts:t.List[Case] tl:t.Optional[Case];
+data AndCase(Case) cases:t.List[Case];
+data OrCase(Case) cases:t.List[Case];

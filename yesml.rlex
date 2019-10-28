@@ -1,0 +1,43 @@
+%ignore space
+number [-+]?[0-9]+(\.[eE][-+]?\d+)?
+space \s
+str "([^\\"]+|\\.)*?"
+chr '.*?'
+identifier [^\(\)\"\s,\'\[\]]+
+
+%require MKIdent
+%require MKNum
+%require MKStr
+
+%require none
+%require true
+%require false
+%require list
+%require Top
+%require Cons
+%require nil
+%require MKLRList
+%require Let
+%require Do
+%require OpenString
+%require OpenId
+
+%require LetExp
+%require App
+%require Lam
+%require ChrExpr
+%require StrExpr
+%require NumExpr
+%require Match
+%require MKLRCommaList
+%require Tuple0
+%require Tuple1
+%require Tuple2
+%require Tuple3
+%require List
+%require MKOrCase
+%require MKAndCase
+%require NumCase
+%require StrCase
+%require ChrCase
+%require ListCase
