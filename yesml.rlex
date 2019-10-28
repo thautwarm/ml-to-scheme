@@ -3,7 +3,7 @@ number [-+]?[0-9]+(\.[eE][-+]?\d+)?
 space \s
 str "([^\\"]+|\\.)*?"
 chr '.*?'
-identifier [^\(\)\"\s,\'\[\]]+
+identifier [^\(\)\"\s,\'\[\]\:]+
 
 %require MKIdent
 %require MKNum

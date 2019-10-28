@@ -43,7 +43,7 @@ Nest   : !hd=Lit                           -> hd;
 
 Lit     : !a=(Id | NumExpr | StrExpr | ChrExpr | List) -> a;
 
-List   : '[' !a=CommaExps 'with' !tl=Case ']' -> List(MKLRCommaList(a), tl);
+List   : '[' !a=CommaExps ':' !tl=Case ']' -> List(MKLRCommaList(a), tl);
 List   : '[' !a=CommaExps ']'              -> List(MKLRCommaList(a), none);
 List   : '[' ']'                           -> List(Tuple0, none);
 
@@ -69,7 +69,7 @@ ChrCase    : !s=<chr>      -> ChrCase(MKStr(s));
 NumCase    : !n=<number>   -> NumCase(MKNum(n));
 StrCase    : !s=<str>      -> StrCase(MKStr(s));
 
-ListCase   : '[' !a=CommaCases 'with' !tl=Case ']' -> ListCase(MKLRCommaList(a), tl);
+ListCase   : '[' !a=CommaCases ':' !tl=Case ']' -> ListCase(MKLRCommaList(a), tl);
 ListCase   : '[' !a=CommaCases ']'              -> ListCase(MKLRCommaList(a), none);
 ListCase   : '[' ']'                            -> ListCase(Tuple0, none);
 
