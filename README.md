@@ -4,7 +4,7 @@ A simple ML language, see grammar at https://github.com/thautwarm/ml-to-scheme/b
 
 Target racket.
 
-In fact not very trivial due to the greatly reduce of code, and more easy-to-write and powerful
+In fact not very trivial due to the greatly reduced code, and more easy-to-write and powerful
 pattern matching.
 
 ## Usage

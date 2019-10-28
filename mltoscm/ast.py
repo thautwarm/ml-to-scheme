@@ -21,14 +21,6 @@ class Ident(Leaf):
 
 
 @dataclass(frozen=True, order=True)
-class Chr(Leaf):
-    chr:chr
-    colno:int
-    lineno:int
-    pass
-
-
-@dataclass(frozen=True, order=True)
 class Str(Leaf):
     str:str
     colno:int
@@ -119,7 +111,7 @@ class Match(Exp):
 
 @dataclass(frozen=True, order=True)
 class ChrExpr(Exp):
-    leaf:Chr
+    leaf:Str
     pass
 
 
@@ -144,7 +136,7 @@ class List(Exp):
 
 @dataclass(frozen=True, order=True)
 class ChrCase(Case):
-    leaf:Chr
+    leaf:Str
     pass
 
 
