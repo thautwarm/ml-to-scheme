@@ -3,6 +3,7 @@ from mltoscm import parsing_required
 from rbnf_rts.rts import Tokens, State, AST
 from typing import Union, Tuple, List
 from typing_extensions import Literal
+import re
 
 __all__ = ['parse']
 _code = mk_parser.__code__
@@ -12,8 +13,11 @@ _parse = mk_parser(**{arg: getattr(parsing_required, arg) for arg in argnames})
 Errors = Tuple[Literal[False], List[Tuple[int, str]]]
 Parsed = Tuple[Literal[True], AST]
 
+comment = re.compile(r"#[^\n]*")
+
 
 def parse(text: str, filename: str = "unknown") -> Union[Parsed, Errors]:
+    text = comment.sub("", text)
     tokens = list(run_lexer(filename, text))
     res = _parse(State(), Tokens(tokens))
     if res[0]:

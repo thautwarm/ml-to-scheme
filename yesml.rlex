@@ -3,7 +3,7 @@ number [-+]?[0-9]+(\.[eE][-+]?\d+)?
 space \s
 str "([^\\"]+|\\.)*?"
 chr '.*?'
-identifier [^\(\)\"\s,\'\[\]\:]+
+identifier [^\(\)\"\s,\'\[\]\|\:]+
 
 %require MKIdent
 %require MKNum
@@ -25,6 +25,7 @@ identifier [^\(\)\"\s,\'\[\]\:]+
 %require LetExp
 %require App
 %require Lam
+%require SymExpr
 %require ChrExpr
 %require StrExpr
 %require NumExpr
@@ -38,6 +39,7 @@ identifier [^\(\)\"\s,\'\[\]\:]+
 %require MKOrCase
 %require MKAndCase
 %require NumCase
+%require SymCase
 %require StrCase
 %require ChrCase
 %require ListCase

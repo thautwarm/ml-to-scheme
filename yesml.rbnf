@@ -34,6 +34,8 @@ Ids     : !hd=Id           -> Cons(hd, nil);
 Ids     : !hd=Id !tl=Ids   -> Cons(hd, tl);
 CommaIds  : [CommaIds ','] Id;
 
+
+SymExpr : ':' !a=Id      -> SymExpr(a);
 ChrExpr : !a=<chr>       -> ChrExpr(MKStr(a));
 NumExpr : !a=<number>    -> NumExpr(MKNum(a));
 StrExpr : !a=<str>       -> StrExpr(MKStr(a));
@@ -41,9 +43,9 @@ StrExpr : !a=<str>       -> StrExpr(MKStr(a));
 Nest   : '(' !hd=Exp ')'                   -> hd;
 Nest   : !hd=Lit                           -> hd;
 
-Lit     : !a=(Id | NumExpr | StrExpr | ChrExpr | List) -> a;
+Lit     : !a=(Id | SymExpr | NumExpr | StrExpr | ChrExpr | List) -> a;
 
-List   : '[' !a=CommaExps ':' !tl=Case ']' -> List(MKLRCommaList(a), tl);
+List   : '[' !a=CommaExps "||" !tl=Case ']' -> List(MKLRCommaList(a), tl);
 List   : '[' !a=CommaExps ']'              -> List(MKLRCommaList(a), none);
 List   : '[' ']'                           -> List(Tuple0, none);
 
@@ -63,13 +65,14 @@ AndCase     : [AndCase '&'] AtomCase;
 
 CommaCases : [CommaCases ','] Case;
 
-AtomCase    : !a=(NumCase | ChrCase | StrCase | ListCase | NestCase | Id) -> a;
+AtomCase    : !a=(NumCase | SymCase | ChrCase | StrCase | ListCase | NestCase | Id) -> a;
 
+SymCase    : ':' !a=Id     -> SymCase(a);
 ChrCase    : !s=<chr>      -> ChrCase(MKStr(s));
 NumCase    : !n=<number>   -> NumCase(MKNum(n));
 StrCase    : !s=<str>      -> StrCase(MKStr(s));
 
-ListCase   : '[' !a=CommaCases ':' !tl=Case ']' -> ListCase(MKLRCommaList(a), tl);
+ListCase   : '[' !a=CommaCases "||" !tl=Case ']' -> ListCase(MKLRCommaList(a), tl);
 ListCase   : '[' !a=CommaCases ']'              -> ListCase(MKLRCommaList(a), none);
 ListCase   : '[' ']'                            -> ListCase(Tuple0, none);
 

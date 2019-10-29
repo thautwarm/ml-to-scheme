@@ -110,6 +110,10 @@ class Visitor:
         return (sym.match, exp, *cases)
 
     @the_exp.register
+    def the_sym(self, n: SymExpr):
+        return Symbol(r"'{}".format(n.leaf.ident))
+
+    @the_exp.register
     def the_chr(self, n: ChrExpr):
         return Symbol(r"#\{}".format(n.leaf.str))
 
@@ -139,6 +143,10 @@ class Visitor:
     @the_case.register
     def the_and(self, n: AndCase):
         return (Symbol("and"), *map(self.the_case, n.cases))
+
+    @the_case.register
+    def the_sym(self, n: SymExpr):
+        return Symbol(r"'{}".format(n.leaf.ident))
 
     @the_case.register
     def the_chr(self, n: ChrCase):

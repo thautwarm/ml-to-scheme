@@ -21,12 +21,14 @@ data App(Exp) f:Exp args:t.List[Exp];
 data Lam(Exp) args:t.List[Ident] body:Exp;
 data Match(Exp) on:Exp cases:t.List[t.Tuple[Case, Exp, Exp]];
 
+data SymExpr(Exp) leaf:Ident;
 data ChrExpr(Exp) leaf:Str;
 data NumExpr(Exp) leaf:Num;
 data StrExpr(Exp) leaf:Str;
 
 data List(Exp) elts:t.List[Exp] tl:t.Optional[Exp];
 
+data SymCase(Case) leaf:Ident;
 data ChrCase(Case) leaf:Str;
 data NumCase(Case) leaf:Num;
 data StrCase(Case) leaf:Str;
