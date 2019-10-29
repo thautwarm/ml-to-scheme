@@ -110,6 +110,12 @@ class Match(Exp):
 
 
 @dataclass(frozen=True, order=True)
+class BoolExpr(Exp):
+    leaf:Num
+    pass
+
+
+@dataclass(frozen=True, order=True)
 class SymExpr(Exp):
     leaf:Ident
     pass
@@ -137,6 +143,12 @@ class StrExpr(Exp):
 class List(Exp):
     elts:t.List[Exp]
     tl:t.Optional[Exp]
+    pass
+
+
+@dataclass(frozen=True, order=True)
+class BoolCase(Case):
+    leaf:Num
     pass
 
 

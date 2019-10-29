@@ -8,6 +8,7 @@ identifier [^\(\)\"\s,\'\[\]\|\:]+
 %require MKIdent
 %require MKNum
 %require MKStr
+%require MKBool
 
 %require none
 %require true
@@ -25,10 +26,13 @@ identifier [^\(\)\"\s,\'\[\]\|\:]+
 %require LetExp
 %require App
 %require Lam
+
+$require BoolExpr
 %require SymExpr
 %require ChrExpr
 %require StrExpr
 %require NumExpr
+
 %require Match
 %require MKLRCommaList
 %require Tuple0
@@ -38,8 +42,11 @@ identifier [^\(\)\"\s,\'\[\]\|\:]+
 %require List
 %require MKOrCase
 %require MKAndCase
+
+$require BoolCase
 %require NumCase
 %require SymCase
 %require StrCase
 %require ChrCase
+
 %require ListCase

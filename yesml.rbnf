@@ -39,6 +39,8 @@ SymExpr : ':' !a=Id      -> SymExpr(a);
 ChrExpr : !a=<chr>       -> ChrExpr(MKStr(a));
 NumExpr : !a=<number>    -> NumExpr(MKNum(a));
 StrExpr : !a=<str>       -> StrExpr(MKStr(a));
+BoolExpr : !a=('true'|'false') -> BoolExpr(MKBool(a));
+
 
 Nest   : '(' !hd=Exp ')'                   -> hd;
 Nest   : !hd=Lit                           -> hd;
@@ -71,6 +73,7 @@ SymCase    : ':' !a=Id     -> SymCase(a);
 ChrCase    : !s=<chr>      -> ChrCase(MKStr(s));
 NumCase    : !n=<number>   -> NumCase(MKNum(n));
 StrCase    : !s=<str>      -> StrCase(MKStr(s));
+BoolCase    : !a=('true'|'false') -> BoolCase(MKBool(a));
 
 ListCase   : '[' !a=CommaCases "||" !tl=Case ']' -> ListCase(MKLRCommaList(a), tl);
 ListCase   : '[' !a=CommaCases ']'              -> ListCase(MKLRCommaList(a), none);

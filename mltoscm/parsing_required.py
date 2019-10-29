@@ -20,6 +20,10 @@ def MKStr(tk: Token):
     return Str(eval(tk.value), tk.colno, tk.lineno)
 
 
+def MKBool(tk: Token):
+    return Num((False, True)[tk.value=="true"], tk.colno, tk.lineno)
+
+
 ToNum = ToStr = _ToConst
 
 
