@@ -19,6 +19,8 @@ comment = re.compile(r"#[^\n]*")
 def parse(text: str, filename: str = "unknown") -> Union[Parsed, Errors]:
     text = comment.sub("", text)
     tokens = list(run_lexer(filename, text))
+    # for e in tokens:
+    #     print(e)
     res = _parse(State(), Tokens(tokens))
     if res[0]:
         return res[1]

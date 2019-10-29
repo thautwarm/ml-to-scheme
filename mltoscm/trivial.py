@@ -82,6 +82,11 @@ class Visitor:
         return Symbol("if"), cond, tc, fc
 
     @the_exp.register
+    def the_block_exp(self, block: BlockExpr):
+
+        return (sym.begin, *map(self.the_exp, block.exprs))
+
+    @the_exp.register
     def the_let_exp(self, let_exp: LetExp):
         ident = let_exp.stmt.ident
         bound = let_exp.stmt.exp

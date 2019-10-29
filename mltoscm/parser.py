@@ -4,7 +4,7 @@ from rbnf_rts.rbnf_linker import link
 from rbnf_rts.utils import ImmutableMap
 from rbnf_rts.lexical import *
 __all__ = ['lexicals', 'run_lexer', 'mk_parser']
-(lexicals, run_lexer) = lexer(r(number='[-+]?[0-9]+(\\.[eE][-+]?\\d+)?'), r(space='\\s'), r(str='"([^\\\\"]+|\\\\.)*?"'), r(chr="'.*?'"), r(sym='\\:\\([^\\(\\)]+\\)|\\:[^\\(\\)]+'), r(identifier='[^\\(\\)\\"\\s,\\\'\\[\\]\\|\\&`]+'), l['||'], l['|'], l['`'], l[']'], l['['], l[','], l[')'], l['('], l['&'], ignores=['space'], reserved_map=ImmutableMap.from_dict({'do': 'quote do', 'let': 'quote let', 'rec': 'quote rec', '=': 'quote =', 'open': 'quote open', '`': 'quote `', ',': 'quote ,', 'in': 'quote in', 'if': 'quote if', 'then': 'quote then', 'else': 'quote else', '(': 'quote (', ')': 'quote )', 'fn': 'quote fn', '->': 'quote ->', 'end': 'quote end', 'true': 'quote true', 'false': 'quote false', '[': 'quote [', '||': 'quote ||', ']': 'quote ]', 'match': 'quote match', 'with': 'quote with', '|': 'quote |', 'when': 'quote when', '&': 'quote &'}), numbering={'BOF': 0, 'EOF': 1, 'quote do': 2, 'quote let': 3, 'quote rec': 4, 'quote =': 5, 'quote open': 6, 'quote `': 7, 'quote ,': 8, 'quote in': 9, 'quote if': 10, 'quote then': 11, 'quote else': 12, 'quote (': 13, 'quote )': 14, 'quote fn': 15, 'quote ->': 16, 'quote end': 17, 'quote true': 18, 'quote false': 19, 'quote [': 20, 'quote ||': 21, 'quote ]': 22, 'quote match': 23, 'quote with': 24, 'quote |': 25, 'quote when': 26, 'quote &': 27, 'number': 28, 'space': 29, 'str': 30, 'chr': 31, 'sym': 32, 'identifier': 33})
+(lexicals, run_lexer) = lexer(r(number='[-+]?[0-9]+(\\.[eE][-+]?\\d+)?'), r(space='\\s'), r(str='"([^\\\\"]+|\\\\.)*?"'), r(chr="'.*?'"), r(sym='\\:[^\\s\\:\\(\\)\\,\\[\\]\\"]+|\\:\\([^\\s\\(\\)\\,\\[\\]\\"]+\\)'), r(identifier='[^\\(\\)\\"\\s,\\\'\\[\\]\\|\\&\\`]+'), l['||'], l['|'], l['`'], l[']'], l['['], l[','], l[')'], l['('], l['&'], ignores=['space'], reserved_map=ImmutableMap.from_dict({'do': 'quote do', 'let': 'quote let', 'rec': 'quote rec', '=': 'quote =', 'open': 'quote open', '`': 'quote `', ',': 'quote ,', 'in': 'quote in', 'if': 'quote if', 'then': 'quote then', 'else': 'quote else', '(': 'quote (', ')': 'quote )', 'fn': 'quote fn', '->': 'quote ->', 'end': 'quote end', 'true': 'quote true', 'false': 'quote false', '[': 'quote [', '||': 'quote ||', ']': 'quote ]', 'match': 'quote match', 'with': 'quote with', '|': 'quote |', 'when': 'quote when', '&': 'quote &'}), numbering={'BOF': 0, 'EOF': 1, 'quote do': 2, 'quote let': 3, 'quote rec': 4, 'quote =': 5, 'quote open': 6, 'quote `': 7, 'quote ,': 8, 'quote in': 9, 'quote if': 10, 'quote then': 11, 'quote else': 12, 'quote (': 13, 'quote )': 14, 'quote fn': 15, 'quote ->': 16, 'quote end': 17, 'quote true': 18, 'quote false': 19, 'quote [': 20, 'quote ||': 21, 'quote ]': 22, 'quote match': 23, 'quote with': 24, 'quote |': 25, 'quote when': 26, 'quote &': 27, 'number': 28, 'space': 29, 'str': 30, 'chr': 31, 'sym': 32, 'identifier': 33})
 
 
 
@@ -1028,22 +1028,250 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, MKSym, none, true, false, list, Top
                     lcl_1 = lcl_1
                     lcl_1 = (False, lcl_1)
                 else:
-                    lcl_1 = parse_Exp(prim__state, prim__tokens)
-                    _slot_4_check = lcl_1
-                    lcl_1 = _slot_4_check[0]
-                    lcl_1 = (lcl_1 is False)
+                    lcl_1 = prim__tokens.offset
+                    _off_2 = lcl_1
+                    lcl_1 = (len(prim__tokens.array) > (prim__tokens.offset + 0))
                     if lcl_1:
-                        lcl_1 = _slot_4_check
+                        lcl_2 = prim__tokens.array[(prim__tokens.offset + 0)]
+                        lcl_2 = lcl_2.idint
+                        if (lcl_2 == 32):
+                            lcl_2 = parse_App(prim__state, prim__tokens)
+                            _slot_4_check = lcl_2
+                            lcl_2 = _slot_4_check[0]
+                            lcl_2 = (lcl_2 is False)
+                            if lcl_2:
+                                lcl_2 = _slot_4_check
+                            else:
+                                lcl_2 = _slot_4_check[1]
+                                lcl_2 = lcl_2
+                                _slot_4 = lcl_2
+                                Exp_right_3 = _slot_4
+                                lcl_2 = Tuple2(Exp_left_0, Exp_right_3)
+                                lcl_2 = App(Exp_op_1, lcl_2)
+                                _slot_local__1 = lcl_2
+                                lcl_2 = (True, _slot_local__1)
+                            lcl_1 = lcl_2
+                        elif (lcl_2 == 30):
+                            lcl_2 = parse_App(prim__state, prim__tokens)
+                            _slot_4_check = lcl_2
+                            lcl_2 = _slot_4_check[0]
+                            lcl_2 = (lcl_2 is False)
+                            if lcl_2:
+                                lcl_2 = _slot_4_check
+                            else:
+                                lcl_3 = _slot_4_check[1]
+                                lcl_3 = lcl_3
+                                _slot_4 = lcl_3
+                                Exp_right_3 = _slot_4
+                                lcl_3 = Tuple2(Exp_left_0, Exp_right_3)
+                                lcl_3 = App(Exp_op_1, lcl_3)
+                                _slot_local__1 = lcl_3
+                                lcl_3 = (True, _slot_local__1)
+                                lcl_2 = lcl_3
+                            lcl_1 = lcl_2
+                        elif (lcl_2 == 18):
+                            lcl_2 = parse_App(prim__state, prim__tokens)
+                            _slot_4_check = lcl_2
+                            lcl_3 = _slot_4_check[0]
+                            lcl_2 = (lcl_3 is False)
+                            if lcl_2:
+                                lcl_2 = _slot_4_check
+                            else:
+                                lcl_2 = _slot_4_check[1]
+                                lcl_2 = lcl_2
+                                _slot_4 = lcl_2
+                                Exp_right_3 = _slot_4
+                                lcl_2 = Tuple2(Exp_left_0, Exp_right_3)
+                                lcl_2 = App(Exp_op_1, lcl_2)
+                                _slot_local__1 = lcl_2
+                                lcl_2 = (True, _slot_local__1)
+                            lcl_1 = lcl_2
+                        elif (lcl_2 == 23):
+                            lcl_2 = parse_App(prim__state, prim__tokens)
+                            _slot_4_check = lcl_2
+                            lcl_2 = _slot_4_check[0]
+                            lcl_2 = (lcl_2 is False)
+                            if lcl_2:
+                                lcl_2 = _slot_4_check
+                            else:
+                                lcl_3 = _slot_4_check[1]
+                                lcl_3 = lcl_3
+                                _slot_4 = lcl_3
+                                Exp_right_3 = _slot_4
+                                lcl_3 = Tuple2(Exp_left_0, Exp_right_3)
+                                lcl_3 = App(Exp_op_1, lcl_3)
+                                _slot_local__1 = lcl_3
+                                lcl_3 = (True, _slot_local__1)
+                                lcl_2 = lcl_3
+                            lcl_1 = lcl_2
+                        elif (lcl_2 == 3):
+                            lcl_2 = parse_LetExp(prim__state, prim__tokens)
+                            _slot_4_check = lcl_2
+                            lcl_3 = _slot_4_check[0]
+                            lcl_2 = (lcl_3 is False)
+                            if lcl_2:
+                                lcl_2 = _slot_4_check
+                            else:
+                                lcl_2 = _slot_4_check[1]
+                                lcl_2 = lcl_2
+                                _slot_4 = lcl_2
+                                Exp_right_3 = _slot_4
+                                lcl_2 = Tuple2(Exp_left_0, Exp_right_3)
+                                lcl_2 = App(Exp_op_1, lcl_2)
+                                _slot_local__1 = lcl_2
+                                lcl_2 = (True, _slot_local__1)
+                            lcl_1 = lcl_2
+                        elif (lcl_2 == 10):
+                            lcl_2 = parse_IfExp(prim__state, prim__tokens)
+                            _slot_4_check = lcl_2
+                            lcl_2 = _slot_4_check[0]
+                            lcl_2 = (lcl_2 is False)
+                            if lcl_2:
+                                lcl_2 = _slot_4_check
+                            else:
+                                lcl_3 = _slot_4_check[1]
+                                lcl_3 = lcl_3
+                                _slot_4 = lcl_3
+                                Exp_right_3 = _slot_4
+                                lcl_3 = Tuple2(Exp_left_0, Exp_right_3)
+                                lcl_3 = App(Exp_op_1, lcl_3)
+                                _slot_local__1 = lcl_3
+                                lcl_3 = (True, _slot_local__1)
+                                lcl_2 = lcl_3
+                            lcl_1 = lcl_2
+                        elif (lcl_2 == 15):
+                            lcl_2 = parse_App(prim__state, prim__tokens)
+                            _slot_4_check = lcl_2
+                            lcl_3 = _slot_4_check[0]
+                            lcl_2 = (lcl_3 is False)
+                            if lcl_2:
+                                lcl_2 = _slot_4_check
+                            else:
+                                lcl_2 = _slot_4_check[1]
+                                lcl_2 = lcl_2
+                                _slot_4 = lcl_2
+                                Exp_right_3 = _slot_4
+                                lcl_2 = Tuple2(Exp_left_0, Exp_right_3)
+                                lcl_2 = App(Exp_op_1, lcl_2)
+                                _slot_local__1 = lcl_2
+                                lcl_2 = (True, _slot_local__1)
+                            lcl_1 = lcl_2
+                        elif (lcl_2 == 19):
+                            lcl_2 = parse_App(prim__state, prim__tokens)
+                            _slot_4_check = lcl_2
+                            lcl_2 = _slot_4_check[0]
+                            lcl_2 = (lcl_2 is False)
+                            if lcl_2:
+                                lcl_2 = _slot_4_check
+                            else:
+                                lcl_3 = _slot_4_check[1]
+                                lcl_3 = lcl_3
+                                _slot_4 = lcl_3
+                                Exp_right_3 = _slot_4
+                                lcl_3 = Tuple2(Exp_left_0, Exp_right_3)
+                                lcl_3 = App(Exp_op_1, lcl_3)
+                                _slot_local__1 = lcl_3
+                                lcl_3 = (True, _slot_local__1)
+                                lcl_2 = lcl_3
+                            lcl_1 = lcl_2
+                        elif (lcl_2 == 20):
+                            lcl_2 = parse_App(prim__state, prim__tokens)
+                            _slot_4_check = lcl_2
+                            lcl_3 = _slot_4_check[0]
+                            lcl_2 = (lcl_3 is False)
+                            if lcl_2:
+                                lcl_2 = _slot_4_check
+                            else:
+                                lcl_2 = _slot_4_check[1]
+                                lcl_2 = lcl_2
+                                _slot_4 = lcl_2
+                                Exp_right_3 = _slot_4
+                                lcl_2 = Tuple2(Exp_left_0, Exp_right_3)
+                                lcl_2 = App(Exp_op_1, lcl_2)
+                                _slot_local__1 = lcl_2
+                                lcl_2 = (True, _slot_local__1)
+                            lcl_1 = lcl_2
+                        elif (lcl_2 == 13):
+                            lcl_2 = parse_App(prim__state, prim__tokens)
+                            _slot_4_check = lcl_2
+                            lcl_2 = _slot_4_check[0]
+                            lcl_2 = (lcl_2 is False)
+                            if lcl_2:
+                                lcl_2 = _slot_4_check
+                            else:
+                                lcl_3 = _slot_4_check[1]
+                                lcl_3 = lcl_3
+                                _slot_4 = lcl_3
+                                Exp_right_3 = _slot_4
+                                lcl_3 = Tuple2(Exp_left_0, Exp_right_3)
+                                lcl_3 = App(Exp_op_1, lcl_3)
+                                _slot_local__1 = lcl_3
+                                lcl_3 = (True, _slot_local__1)
+                                lcl_2 = lcl_3
+                            lcl_1 = lcl_2
+                        elif (lcl_2 == 28):
+                            lcl_2 = parse_App(prim__state, prim__tokens)
+                            _slot_4_check = lcl_2
+                            lcl_3 = _slot_4_check[0]
+                            lcl_2 = (lcl_3 is False)
+                            if lcl_2:
+                                lcl_2 = _slot_4_check
+                            else:
+                                lcl_2 = _slot_4_check[1]
+                                lcl_2 = lcl_2
+                                _slot_4 = lcl_2
+                                Exp_right_3 = _slot_4
+                                lcl_2 = Tuple2(Exp_left_0, Exp_right_3)
+                                lcl_2 = App(Exp_op_1, lcl_2)
+                                _slot_local__1 = lcl_2
+                                lcl_2 = (True, _slot_local__1)
+                            lcl_1 = lcl_2
+                        elif (lcl_2 == 33):
+                            lcl_2 = parse_App(prim__state, prim__tokens)
+                            _slot_4_check = lcl_2
+                            lcl_2 = _slot_4_check[0]
+                            lcl_2 = (lcl_2 is False)
+                            if lcl_2:
+                                lcl_2 = _slot_4_check
+                            else:
+                                lcl_3 = _slot_4_check[1]
+                                lcl_3 = lcl_3
+                                _slot_4 = lcl_3
+                                Exp_right_3 = _slot_4
+                                lcl_3 = Tuple2(Exp_left_0, Exp_right_3)
+                                lcl_3 = App(Exp_op_1, lcl_3)
+                                _slot_local__1 = lcl_3
+                                lcl_3 = (True, _slot_local__1)
+                                lcl_2 = lcl_3
+                            lcl_1 = lcl_2
+                        elif (lcl_2 == 31):
+                            lcl_2 = parse_App(prim__state, prim__tokens)
+                            _slot_4_check = lcl_2
+                            lcl_3 = _slot_4_check[0]
+                            lcl_2 = (lcl_3 is False)
+                            if lcl_2:
+                                lcl_2 = _slot_4_check
+                            else:
+                                lcl_2 = _slot_4_check[1]
+                                lcl_2 = lcl_2
+                                _slot_4 = lcl_2
+                                Exp_right_3 = _slot_4
+                                lcl_2 = Tuple2(Exp_left_0, Exp_right_3)
+                                lcl_2 = App(Exp_op_1, lcl_2)
+                                _slot_local__1 = lcl_2
+                                lcl_2 = (True, _slot_local__1)
+                            lcl_1 = lcl_2
+                        else:
+                            lcl_2 = (_off_2, 'Exp lookahead failed')
+                            lcl_2 = prim__cons(lcl_2, prim__nil)
+                            lcl_2 = lcl_2
+                            lcl_2 = (False, lcl_2)
+                            lcl_1 = lcl_2
                     else:
-                        lcl_2 = _slot_4_check[1]
-                        lcl_2 = lcl_2
-                        _slot_4 = lcl_2
-                        Exp_right_2 = _slot_4
-                        lcl_2 = Tuple2(Exp_left_0, Exp_right_2)
-                        lcl_2 = App(Exp_op_1, lcl_2)
-                        _slot_local__1 = lcl_2
-                        lcl_2 = (True, _slot_local__1)
+                        lcl_1 = (_off_2, 'Exp got EOF')
+                        lcl_2 = prim__cons(lcl_1, prim__nil)
                         lcl_1 = lcl_2
+                        lcl_1 = (False, lcl_1)
                 lcl_0 = lcl_1
         return lcl_0
 
