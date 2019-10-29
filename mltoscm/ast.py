@@ -81,6 +81,18 @@ class Do(Stmt):
 
 
 @dataclass(frozen=True, order=True)
+class Or(Exp):
+    exprs:t.List[Exp]
+    pass
+
+
+@dataclass(frozen=True, order=True)
+class And(Exp):
+    exprs:t.List[Exp]
+    pass
+
+
+@dataclass(frozen=True, order=True)
 class BlockExpr(Exp):
     exprs:t.List[Exp]
     pass

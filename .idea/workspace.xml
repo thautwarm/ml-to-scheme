@@ -6,9 +6,8 @@
       <change beforePath="$PROJECT_DIR$/mltoscm/ast.gen" beforeDir="false" afterPath="$PROJECT_DIR$/mltoscm/ast.gen" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mltoscm/ast.py" beforeDir="false" afterPath="$PROJECT_DIR$/mltoscm/ast.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mltoscm/parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/mltoscm/parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mltoscm/parser_wrap.py" beforeDir="false" afterPath="$PROJECT_DIR$/mltoscm/parser_wrap.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mltoscm/trivial.py" beforeDir="false" afterPath="$PROJECT_DIR$/mltoscm/trivial.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/d.ml" beforeDir="false" afterPath="$PROJECT_DIR$/test/d.ml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yesml.rbnf" beforeDir="false" afterPath="$PROJECT_DIR$/yesml.rbnf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yesml.rlex" beforeDir="false" afterPath="$PROJECT_DIR$/yesml.rlex" afterDir="false" />
     </list>
@@ -45,7 +44,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.datagen">
+  <component name="RunManager" selected="Python.__init__">
     <configuration name="__init__" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="ml-to-scheme" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -90,8 +89,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.datagen" />
         <item itemvalue="Python.__init__" />
+        <item itemvalue="Python.datagen" />
       </list>
     </recent_temporary>
   </component>

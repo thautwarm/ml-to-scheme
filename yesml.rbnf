@@ -13,12 +13,18 @@ Let   : 'let' !ident=Id '=' !exp=Exp           -> Let(ident, false, exp);
 Open  : 'open' !ident=Id                  -> OpenId(ident);
 Open  : 'open' !string=<str>              -> OpenString(MKStr(string));
 
-Exp      : !it=BlockExpr                 -> BlockExpr(MKLRCommaList(it));
+Exp      : !it=BlockExp                 -> BlockExpr(MKLRCommaList(it));
 
-BlockExpr : [BlockExpr ';'] TopExpr;
+BlockExp : [BlockExp ';'] OrExp;
 
-TopExp   : !it=(App | LetExp | IfExp)           -> it;
-TopExp   : !left=TopExp '`' !op=Id '`' !right=(App | LetExp | IfExp) -> App(op, Tuple2(left, right));
+OrExp      : !it=OrExpRoot -> Or(MKLRCommaList(it));
+OrExpRoot  : [OrExpRoot '||'] AndExp;
+
+AndExp      : !it=AndExpRoot -> And(MKLRCommaList(it));
+AndExpRoot  : [AndExpRoot '&&'] BinOp;
+
+BinOp   : !it=(App | LetExp | IfExp)           -> it;
+BinOp   : !left=BinOp '`' !op=Id '`' !right=(App | LetExp | IfExp) -> App(op, Tuple2(left, right));
 
 CommaExps : [CommaExps ','] Exp;
 
@@ -54,7 +60,7 @@ Nest   : !hd=Lit                           -> hd;
 
 Lit     : !a=(Id | SymExpr | BoolExpr | NumExpr | StrExpr | ChrExpr | List) -> a;
 
-List   : '[' !a=CommaExps "||" !tl=Case ']' -> List(MKLRCommaList(a), tl);
+List   : '[' !a=CommaExps "::" !tl=Case ']' -> List(MKLRCommaList(a), tl);
 List   : '[' !a=CommaExps ']'              -> List(MKLRCommaList(a), none);
 List   : '[' ']'                           -> List(Tuple0, none);
 
@@ -82,7 +88,7 @@ NumCase    : !n=<number>   -> NumCase(MKNum(n));
 StrCase    : !s=<str>      -> StrCase(MKStr(s));
 BoolCase    : !a=('true'|'false') -> BoolCase(MKBool(a));
 
-ListCase   : '[' !a=CommaCases "||" !tl=Case ']' -> ListCase(MKLRCommaList(a), tl);
+ListCase   : '[' !a=CommaCases "::" !tl=Case ']' -> ListCase(MKLRCommaList(a), tl);
 ListCase   : '[' !a=CommaCases ']'              -> ListCase(MKLRCommaList(a), none);
 ListCase   : '[' ']'                            -> ListCase(Tuple0, none);
 

@@ -12,6 +12,9 @@ identifier [^\(\)\"\s,\'\[\]\|\&\`\;]+
 %require MKBool
 %require MKSym
 
+%require And
+%require Or
+
 %require none
 %require true
 %require false

@@ -83,7 +83,8 @@ class Visitor:
 
     @the_exp.register
     def the_block_exp(self, block: BlockExpr):
-
+        if len(block.exprs) is 1:
+            return self.the_exp(block.exprs[0])
         return (sym.begin, *map(self.the_exp, block.exprs))
 
     @the_exp.register
@@ -97,6 +98,20 @@ class Visitor:
             head = sym.let
         return head, [(Symbol(ident.ident), self.the_exp(bound))
                       ], self.the_exp(block)
+
+    @the_exp.register
+    def the_and(self, and_: And):
+        ops = list(map(self.the_exp, and_.exprs))
+        if len(ops) is 1:
+            return ops[0]
+        return (Symbol("and"), *ops)
+
+    @the_exp.register
+    def the_or(self, or_: Or):
+        ops = list(map(self.the_exp, or_.exprs))
+        if len(ops) is 1:
+            return ops[0]
+        return (Symbol("or"), *ops)
 
     @the_exp.register
     def the_app(self, app: App):
@@ -203,7 +218,7 @@ class Visitor:
         return (Symbol("list-rest"), *elts, self.the_case(tl))
 
 
-indent_tokens = {"match", "if", "let", "define", "lambda"}
+indent_tokens = {"match", "if", "let", "define", "lambda", "begin"}
 
 
 @contextmanager
