@@ -38,7 +38,7 @@ Ids     : !hd=Id !tl=Ids   -> Cons(hd, tl);
 CommaIds  : [CommaIds ','] Id;
 
 
-SymExpr : ':' !a=Id      -> SymExpr(a);
+SymExpr : !a=<sym>       -> SymExpr(MKSym(a));
 ChrExpr : !a=<chr>       -> ChrExpr(MKStr(a));
 NumExpr : !a=<number>    -> NumExpr(MKNum(a));
 StrExpr : !a=<str>       -> StrExpr(MKStr(a));
@@ -72,7 +72,7 @@ CommaCases : [CommaCases ','] Case;
 
 AtomCase    : !a=(NumCase | SymCase | BoolCase | ChrCase | StrCase | ListCase | NestCase | Id) -> a;
 
-SymCase    : ':' !a=Id     -> SymCase(a);
+SymCase    : !a=<sym>      -> SymCase(MKSym(a));
 ChrCase    : !s=<chr>      -> ChrCase(MKStr(s));
 NumCase    : !n=<number>   -> NumCase(MKNum(n));
 StrCase    : !s=<str>      -> StrCase(MKStr(s));

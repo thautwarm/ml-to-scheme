@@ -21,7 +21,16 @@ def MKStr(tk: Token):
 
 
 def MKBool(tk: Token):
-    return Num((False, True)[tk.value=="true"], tk.colno, tk.lineno)
+    return Num((False, True)[tk.value == "true"], tk.colno, tk.lineno)
+
+
+def MKSym(tk: Token):
+    val = tk.value
+    if val.endswith(')'):
+        val = val[2:-1]
+    else:
+        val = val[1:]
+    return Ident(val, tk.colno, tk.lineno)
 
 
 ToNum = ToStr = _ToConst
