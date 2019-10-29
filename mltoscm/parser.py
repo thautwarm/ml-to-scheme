@@ -4,15 +4,15 @@ from rbnf_rts.rbnf_linker import link
 from rbnf_rts.utils import ImmutableMap
 from rbnf_rts.lexical import *
 __all__ = ['lexicals', 'run_lexer', 'mk_parser']
-(lexicals, run_lexer) = lexer(r(number='[-+]?[0-9]+(\\.[eE][-+]?\\d+)?'), r(space='\\s'), r(str='"([^\\\\"]+|\\\\.)*?"'), r(chr="'.*?'"), r(identifier='[^\\(\\)\\"\\s,\\\'\\[\\]\\|\\&\\:`]+'), l['||'], l['|'], l['`'], l[']'], l['['], l[':'], l[','], l[')'], l['('], l['&'], ignores=['space'], reserved_map=ImmutableMap.from_dict({'do': 'quote do', 'let': 'quote let', 'rec': 'quote rec', '=': 'quote =', 'open': 'quote open', '`': 'quote `', ',': 'quote ,', 'in': 'quote in', 'if': 'quote if', 'then': 'quote then', 'else': 'quote else', '(': 'quote (', ')': 'quote )', 'fn': 'quote fn', '->': 'quote ->', 'end': 'quote end', ':': 'quote :', 'true': 'quote true', 'false': 'quote false', '[': 'quote [', '||': 'quote ||', ']': 'quote ]', 'match': 'quote match', 'with': 'quote with', '|': 'quote |', 'when': 'quote when', '&': 'quote &'}), numbering={'BOF': 0, 'EOF': 1, 'quote do': 2, 'quote let': 3, 'quote rec': 4, 'quote =': 5, 'quote open': 6, 'quote `': 7, 'quote ,': 8, 'quote in': 9, 'quote if': 10, 'quote then': 11, 'quote else': 12, 'quote (': 13, 'quote )': 14, 'quote fn': 15, 'quote ->': 16, 'quote end': 17, 'quote :': 18, 'quote true': 19, 'quote false': 20, 'quote [': 21, 'quote ||': 22, 'quote ]': 23, 'quote match': 24, 'quote with': 25, 'quote |': 26, 'quote when': 27, 'quote &': 28, 'number': 29, 'space': 30, 'str': 31, 'chr': 32, 'identifier': 33})
+(lexicals, run_lexer) = lexer(r(number='[-+]?[0-9]+(\\.[eE][-+]?\\d+)?'), r(space='\\s'), r(str='"([^\\\\"]+|\\\\.)*?"'), r(chr="'.*?'"), r(sym='\\:\\([^\\(\\)]+\\)|\\:[^\\(\\)]+'), r(identifier='[^\\(\\)\\"\\s,\\\'\\[\\]\\|\\&`]+'), l['||'], l['|'], l['`'], l[']'], l['['], l[','], l[')'], l['('], l['&'], ignores=['space'], reserved_map=ImmutableMap.from_dict({'do': 'quote do', 'let': 'quote let', 'rec': 'quote rec', '=': 'quote =', 'open': 'quote open', '`': 'quote `', ',': 'quote ,', 'in': 'quote in', 'if': 'quote if', 'then': 'quote then', 'else': 'quote else', '(': 'quote (', ')': 'quote )', 'fn': 'quote fn', '->': 'quote ->', 'end': 'quote end', 'true': 'quote true', 'false': 'quote false', '[': 'quote [', '||': 'quote ||', ']': 'quote ]', 'match': 'quote match', 'with': 'quote with', '|': 'quote |', 'when': 'quote when', '&': 'quote &'}), numbering={'BOF': 0, 'EOF': 1, 'quote do': 2, 'quote let': 3, 'quote rec': 4, 'quote =': 5, 'quote open': 6, 'quote `': 7, 'quote ,': 8, 'quote in': 9, 'quote if': 10, 'quote then': 11, 'quote else': 12, 'quote (': 13, 'quote )': 14, 'quote fn': 15, 'quote ->': 16, 'quote end': 17, 'quote true': 18, 'quote false': 19, 'quote [': 20, 'quote ||': 21, 'quote ]': 22, 'quote match': 23, 'quote with': 24, 'quote |': 25, 'quote when': 26, 'quote &': 27, 'number': 28, 'space': 29, 'str': 30, 'chr': 31, 'sym': 32, 'identifier': 33})
 
 
 
-def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons, nil, MKLRList, Let, Do, OpenString, OpenId, LetExp, App, Lam, IfExp, BoolExpr, SymExpr, ChrExpr, StrExpr, NumExpr, Match, MKLRCommaList, Tuple0, Tuple1, Tuple2, Tuple3, List, MKOrCase, MKAndCase, BoolCase, NumCase, SymCase, StrCase, ChrCase, ListCase):
+def mk_parser(MKIdent, MKNum, MKStr, MKBool, MKSym, none, true, false, list, Top, Cons, nil, MKLRList, Let, Do, OpenString, OpenId, LetExp, App, Lam, IfExp, BoolExpr, SymExpr, ChrExpr, StrExpr, NumExpr, Match, MKLRCommaList, Tuple0, Tuple1, Tuple2, Tuple3, List, MKOrCase, MKAndCase, BoolCase, NumCase, SymCase, StrCase, ChrCase, ListCase):
     from rbnf_rts.rts import AST as prim__mk__ast, Cons as prim__cons, _nil as prim__nil
 
     def lr_step_AndCase(_slot_0, prim__state, prim__tokens):
-        lcl_0 = 28
+        lcl_0 = 27
         try:
             _py_local_tk = prim__tokens.array[prim__tokens.offset]
             if (_py_local_tk.idint is lcl_0):
@@ -78,11 +78,46 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
         if lcl_0:
             lcl_2 = prim__tokens.array[(prim__tokens.offset + 0)]
             lcl_2 = lcl_2.idint
-            if (lcl_2 == 31):
+            if (lcl_2 == 32):
                 lcl_2 = parse_Lit(prim__state, prim__tokens)
                 _slot_1_check = lcl_2
                 lcl_2 = _slot_1_check[0]
                 lcl_2 = (lcl_2 is False)
+                if lcl_2:
+                    lcl_2 = _slot_1_check
+                else:
+                    lcl_2 = _slot_1_check[1]
+                    lcl_2 = lcl_2
+                    _slot_1 = lcl_2
+                    App_arg_1 = _slot_1
+                    lcl_2 = Tuple1(App_arg_1)
+                    lcl_2 = App(App_f_0, lcl_2)
+                    _slot_local__1 = lcl_2
+                    lcl_2 = (True, _slot_local__1)
+                lcl_1 = lcl_2
+            elif (lcl_2 == 30):
+                lcl_2 = parse_Lit(prim__state, prim__tokens)
+                _slot_1_check = lcl_2
+                lcl_2 = _slot_1_check[0]
+                lcl_2 = (lcl_2 is False)
+                if lcl_2:
+                    lcl_2 = _slot_1_check
+                else:
+                    lcl_3 = _slot_1_check[1]
+                    lcl_3 = lcl_3
+                    _slot_1 = lcl_3
+                    App_arg_1 = _slot_1
+                    lcl_3 = Tuple1(App_arg_1)
+                    lcl_3 = App(App_f_0, lcl_3)
+                    _slot_local__1 = lcl_3
+                    lcl_3 = (True, _slot_local__1)
+                    lcl_2 = lcl_3
+                lcl_1 = lcl_2
+            elif (lcl_2 == 18):
+                lcl_2 = parse_Lit(prim__state, prim__tokens)
+                _slot_1_check = lcl_2
+                lcl_3 = _slot_1_check[0]
+                lcl_2 = (lcl_3 is False)
                 if lcl_2:
                     lcl_2 = _slot_1_check
                 else:
@@ -130,41 +165,6 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                     _slot_local__1 = lcl_2
                     lcl_2 = (True, _slot_local__1)
                 lcl_1 = lcl_2
-            elif (lcl_2 == 21):
-                lcl_2 = parse_Lit(prim__state, prim__tokens)
-                _slot_1_check = lcl_2
-                lcl_2 = _slot_1_check[0]
-                lcl_2 = (lcl_2 is False)
-                if lcl_2:
-                    lcl_2 = _slot_1_check
-                else:
-                    lcl_3 = _slot_1_check[1]
-                    lcl_3 = lcl_3
-                    _slot_1 = lcl_3
-                    App_arg_1 = _slot_1
-                    lcl_3 = Tuple1(App_arg_1)
-                    lcl_3 = App(App_f_0, lcl_3)
-                    _slot_local__1 = lcl_3
-                    lcl_3 = (True, _slot_local__1)
-                    lcl_2 = lcl_3
-                lcl_1 = lcl_2
-            elif (lcl_2 == 18):
-                lcl_2 = parse_Lit(prim__state, prim__tokens)
-                _slot_1_check = lcl_2
-                lcl_3 = _slot_1_check[0]
-                lcl_2 = (lcl_3 is False)
-                if lcl_2:
-                    lcl_2 = _slot_1_check
-                else:
-                    lcl_2 = _slot_1_check[1]
-                    lcl_2 = lcl_2
-                    _slot_1 = lcl_2
-                    App_arg_1 = _slot_1
-                    lcl_2 = Tuple1(App_arg_1)
-                    lcl_2 = App(App_f_0, lcl_2)
-                    _slot_local__1 = lcl_2
-                    lcl_2 = (True, _slot_local__1)
-                lcl_1 = lcl_2
             elif (lcl_2 == 13):
                 _py_local_i = prim__tokens.offset
                 _py_local_t = prim__tokens.array[_py_local_i]
@@ -177,7 +177,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                 if lcl_2:
                     lcl_4 = prim__tokens.array[(prim__tokens.offset + 0)]
                     lcl_4 = lcl_4.idint
-                    if (lcl_4 == 31):
+                    if (lcl_4 == 32):
                         lcl_4 = parse_CommaExps(prim__state, prim__tokens)
                         _slot_2_check = lcl_4
                         lcl_4 = _slot_2_check[0]
@@ -213,7 +213,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                 _slot_local__1 = lcl_4
                                 lcl_4 = (True, _slot_local__1)
                         lcl_3 = lcl_4
-                    elif (lcl_4 == 19):
+                    elif (lcl_4 == 30):
                         lcl_4 = parse_CommaExps(prim__state, prim__tokens)
                         _slot_2_check = lcl_4
                         lcl_4 = _slot_2_check[0]
@@ -249,7 +249,43 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                 _slot_local__1 = lcl_4
                                 lcl_4 = (True, _slot_local__1)
                         lcl_3 = lcl_4
-                    elif (lcl_4 == 24):
+                    elif (lcl_4 == 18):
+                        lcl_4 = parse_CommaExps(prim__state, prim__tokens)
+                        _slot_2_check = lcl_4
+                        lcl_4 = _slot_2_check[0]
+                        lcl_4 = (lcl_4 is False)
+                        if lcl_4:
+                            lcl_4 = _slot_2_check
+                        else:
+                            lcl_4 = _slot_2_check[1]
+                            lcl_4 = lcl_4
+                            _slot_2 = lcl_4
+                            App_args_2 = _slot_2
+                            lcl_4 = 14
+                            try:
+                                _py_local_tk = prim__tokens.array[prim__tokens.offset]
+                                if (_py_local_tk.idint is lcl_4):
+                                    prim__tokens.offset += 1
+                                else:
+                                    _py_local_tk = None
+                            except IndexError:
+                                _py_local_tk = None
+                            lcl_4 = _py_local_tk
+                            _slot_3 = lcl_4
+                            lcl_4 = (_slot_3 is None)
+                            if lcl_4:
+                                lcl_4 = prim__tokens.offset
+                                lcl_4 = (lcl_4, 'quote ) not match')
+                                lcl_4 = prim__cons(lcl_4, prim__nil)
+                                lcl_4 = lcl_4
+                                lcl_4 = (False, lcl_4)
+                            else:
+                                lcl_4 = MKLRCommaList(App_args_2)
+                                lcl_4 = App(App_f_0, lcl_4)
+                                _slot_local__1 = lcl_4
+                                lcl_4 = (True, _slot_local__1)
+                        lcl_3 = lcl_4
+                    elif (lcl_4 == 23):
                         lcl_4 = parse_CommaExps(prim__state, prim__tokens)
                         _slot_2_check = lcl_4
                         lcl_4 = _slot_2_check[0]
@@ -393,79 +429,43 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                 _slot_local__1 = lcl_4
                                 lcl_4 = (True, _slot_local__1)
                         lcl_3 = lcl_4
+                    elif (lcl_4 == 19):
+                        lcl_4 = parse_CommaExps(prim__state, prim__tokens)
+                        _slot_2_check = lcl_4
+                        lcl_4 = _slot_2_check[0]
+                        lcl_4 = (lcl_4 is False)
+                        if lcl_4:
+                            lcl_4 = _slot_2_check
+                        else:
+                            lcl_4 = _slot_2_check[1]
+                            lcl_4 = lcl_4
+                            _slot_2 = lcl_4
+                            App_args_2 = _slot_2
+                            lcl_4 = 14
+                            try:
+                                _py_local_tk = prim__tokens.array[prim__tokens.offset]
+                                if (_py_local_tk.idint is lcl_4):
+                                    prim__tokens.offset += 1
+                                else:
+                                    _py_local_tk = None
+                            except IndexError:
+                                _py_local_tk = None
+                            lcl_4 = _py_local_tk
+                            _slot_3 = lcl_4
+                            lcl_4 = (_slot_3 is None)
+                            if lcl_4:
+                                lcl_4 = prim__tokens.offset
+                                lcl_4 = (lcl_4, 'quote ) not match')
+                                lcl_4 = prim__cons(lcl_4, prim__nil)
+                                lcl_4 = lcl_4
+                                lcl_4 = (False, lcl_4)
+                            else:
+                                lcl_4 = MKLRCommaList(App_args_2)
+                                lcl_4 = App(App_f_0, lcl_4)
+                                _slot_local__1 = lcl_4
+                                lcl_4 = (True, _slot_local__1)
+                        lcl_3 = lcl_4
                     elif (lcl_4 == 20):
-                        lcl_4 = parse_CommaExps(prim__state, prim__tokens)
-                        _slot_2_check = lcl_4
-                        lcl_4 = _slot_2_check[0]
-                        lcl_4 = (lcl_4 is False)
-                        if lcl_4:
-                            lcl_4 = _slot_2_check
-                        else:
-                            lcl_4 = _slot_2_check[1]
-                            lcl_4 = lcl_4
-                            _slot_2 = lcl_4
-                            App_args_2 = _slot_2
-                            lcl_4 = 14
-                            try:
-                                _py_local_tk = prim__tokens.array[prim__tokens.offset]
-                                if (_py_local_tk.idint is lcl_4):
-                                    prim__tokens.offset += 1
-                                else:
-                                    _py_local_tk = None
-                            except IndexError:
-                                _py_local_tk = None
-                            lcl_4 = _py_local_tk
-                            _slot_3 = lcl_4
-                            lcl_4 = (_slot_3 is None)
-                            if lcl_4:
-                                lcl_4 = prim__tokens.offset
-                                lcl_4 = (lcl_4, 'quote ) not match')
-                                lcl_4 = prim__cons(lcl_4, prim__nil)
-                                lcl_4 = lcl_4
-                                lcl_4 = (False, lcl_4)
-                            else:
-                                lcl_4 = MKLRCommaList(App_args_2)
-                                lcl_4 = App(App_f_0, lcl_4)
-                                _slot_local__1 = lcl_4
-                                lcl_4 = (True, _slot_local__1)
-                        lcl_3 = lcl_4
-                    elif (lcl_4 == 21):
-                        lcl_4 = parse_CommaExps(prim__state, prim__tokens)
-                        _slot_2_check = lcl_4
-                        lcl_4 = _slot_2_check[0]
-                        lcl_4 = (lcl_4 is False)
-                        if lcl_4:
-                            lcl_4 = _slot_2_check
-                        else:
-                            lcl_4 = _slot_2_check[1]
-                            lcl_4 = lcl_4
-                            _slot_2 = lcl_4
-                            App_args_2 = _slot_2
-                            lcl_4 = 14
-                            try:
-                                _py_local_tk = prim__tokens.array[prim__tokens.offset]
-                                if (_py_local_tk.idint is lcl_4):
-                                    prim__tokens.offset += 1
-                                else:
-                                    _py_local_tk = None
-                            except IndexError:
-                                _py_local_tk = None
-                            lcl_4 = _py_local_tk
-                            _slot_3 = lcl_4
-                            lcl_4 = (_slot_3 is None)
-                            if lcl_4:
-                                lcl_4 = prim__tokens.offset
-                                lcl_4 = (lcl_4, 'quote ) not match')
-                                lcl_4 = prim__cons(lcl_4, prim__nil)
-                                lcl_4 = lcl_4
-                                lcl_4 = (False, lcl_4)
-                            else:
-                                lcl_4 = MKLRCommaList(App_args_2)
-                                lcl_4 = App(App_f_0, lcl_4)
-                                _slot_local__1 = lcl_4
-                                lcl_4 = (True, _slot_local__1)
-                        lcl_3 = lcl_4
-                    elif (lcl_4 == 18):
                         lcl_4 = parse_CommaExps(prim__state, prim__tokens)
                         _slot_2_check = lcl_4
                         lcl_4 = _slot_2_check[0]
@@ -548,7 +548,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                 lcl_5 = (True, _slot_local__1)
                             lcl_4 = lcl_5
                         lcl_3 = lcl_4
-                    elif (lcl_4 == 29):
+                    elif (lcl_4 == 28):
                         lcl_4 = parse_CommaExps(prim__state, prim__tokens)
                         _slot_2_check = lcl_4
                         lcl_4 = _slot_2_check[0]
@@ -622,7 +622,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                 lcl_5 = (True, _slot_local__1)
                             lcl_4 = lcl_5
                         lcl_3 = lcl_4
-                    elif (lcl_4 == 32):
+                    elif (lcl_4 == 31):
                         lcl_4 = parse_CommaExps(prim__state, prim__tokens)
                         _slot_2_check = lcl_4
                         lcl_4 = _slot_2_check[0]
@@ -673,7 +673,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                     lcl_3 = (False, lcl_3)
                     lcl_2 = lcl_3
                 lcl_1 = lcl_2
-            elif (lcl_2 == 29):
+            elif (lcl_2 == 28):
                 lcl_2 = parse_Lit(prim__state, prim__tokens)
                 _slot_1_check = lcl_2
                 lcl_2 = _slot_1_check[0]
@@ -708,7 +708,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                     _slot_local__1 = lcl_2
                     lcl_2 = (True, _slot_local__1)
                 lcl_1 = lcl_2
-            elif (lcl_2 == 32):
+            elif (lcl_2 == 31):
                 lcl_2 = parse_Lit(prim__state, prim__tokens)
                 _slot_1_check = lcl_2
                 lcl_2 = _slot_1_check[0]
@@ -1069,7 +1069,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
         return lr_Exp_reduce
 
     def lr_step_OrCase(_slot_0, prim__state, prim__tokens):
-        lcl_0 = 26
+        lcl_0 = 25
         try:
             _py_local_tk = prim__tokens.array[prim__tokens.offset]
             if (_py_local_tk.idint is lcl_0):
@@ -1187,11 +1187,42 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
         if lcl_0:
             lcl_2 = prim__tokens.array[(prim__tokens.offset + 0)]
             lcl_2 = lcl_2.idint
-            if (lcl_2 == 31):
+            if (lcl_2 == 32):
+                lcl_2 = parse_SymCase(prim__state, prim__tokens)
+                _slot_0_check = lcl_2
+                lcl_2 = _slot_0_check[0]
+                lcl_2 = (lcl_2 is False)
+                if lcl_2:
+                    lcl_2 = _slot_0_check
+                else:
+                    lcl_2 = _slot_0_check[1]
+                    lcl_2 = lcl_2
+                    _slot_0 = lcl_2
+                    AtomCase_a_1 = _slot_0
+                    _slot_local__1 = AtomCase_a_1
+                    lcl_2 = (True, _slot_local__1)
+                lcl_1 = lcl_2
+            elif (lcl_2 == 30):
                 lcl_2 = parse_StrCase(prim__state, prim__tokens)
                 _slot_0_check = lcl_2
                 lcl_2 = _slot_0_check[0]
                 lcl_2 = (lcl_2 is False)
+                if lcl_2:
+                    lcl_2 = _slot_0_check
+                else:
+                    lcl_3 = _slot_0_check[1]
+                    lcl_3 = lcl_3
+                    _slot_0 = lcl_3
+                    AtomCase_a_1 = _slot_0
+                    _slot_local__1 = AtomCase_a_1
+                    lcl_3 = (True, _slot_local__1)
+                    lcl_2 = lcl_3
+                lcl_1 = lcl_2
+            elif (lcl_2 == 18):
+                lcl_2 = parse_BoolCase(prim__state, prim__tokens)
+                _slot_0_check = lcl_2
+                lcl_3 = _slot_0_check[0]
+                lcl_2 = (lcl_3 is False)
                 if lcl_2:
                     lcl_2 = _slot_0_check
                 else:
@@ -1219,38 +1250,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                     lcl_2 = lcl_3
                 lcl_1 = lcl_2
             elif (lcl_2 == 20):
-                lcl_2 = parse_BoolCase(prim__state, prim__tokens)
-                _slot_0_check = lcl_2
-                lcl_3 = _slot_0_check[0]
-                lcl_2 = (lcl_3 is False)
-                if lcl_2:
-                    lcl_2 = _slot_0_check
-                else:
-                    lcl_2 = _slot_0_check[1]
-                    lcl_2 = lcl_2
-                    _slot_0 = lcl_2
-                    AtomCase_a_1 = _slot_0
-                    _slot_local__1 = AtomCase_a_1
-                    lcl_2 = (True, _slot_local__1)
-                lcl_1 = lcl_2
-            elif (lcl_2 == 21):
                 lcl_2 = parse_ListCase(prim__state, prim__tokens)
-                _slot_0_check = lcl_2
-                lcl_2 = _slot_0_check[0]
-                lcl_2 = (lcl_2 is False)
-                if lcl_2:
-                    lcl_2 = _slot_0_check
-                else:
-                    lcl_3 = _slot_0_check[1]
-                    lcl_3 = lcl_3
-                    _slot_0 = lcl_3
-                    AtomCase_a_1 = _slot_0
-                    _slot_local__1 = AtomCase_a_1
-                    lcl_3 = (True, _slot_local__1)
-                    lcl_2 = lcl_3
-                lcl_1 = lcl_2
-            elif (lcl_2 == 18):
-                lcl_2 = parse_SymCase(prim__state, prim__tokens)
                 _slot_0_check = lcl_2
                 lcl_3 = _slot_0_check[0]
                 lcl_2 = (lcl_3 is False)
@@ -1280,7 +1280,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                     lcl_3 = (True, _slot_local__1)
                     lcl_2 = lcl_3
                 lcl_1 = lcl_2
-            elif (lcl_2 == 29):
+            elif (lcl_2 == 28):
                 lcl_2 = parse_NumCase(prim__state, prim__tokens)
                 _slot_0_check = lcl_2
                 lcl_3 = _slot_0_check[0]
@@ -1311,7 +1311,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                     lcl_3 = (True, _slot_local__1)
                     lcl_2 = lcl_3
                 lcl_1 = lcl_2
-            elif (lcl_2 == 32):
+            elif (lcl_2 == 31):
                 lcl_2 = parse_ChrCase(prim__state, prim__tokens)
                 _slot_0_check = lcl_2
                 lcl_3 = _slot_0_check[0]
@@ -1348,7 +1348,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
         if lcl_0:
             lcl_2 = prim__tokens.array[(prim__tokens.offset + 0)]
             lcl_2 = lcl_2.idint
-            if (lcl_2 == 31):
+            if (lcl_2 == 32):
                 lcl_2 = parse_Nest(prim__state, prim__tokens)
                 _slot_0_check = lcl_2
                 lcl_2 = _slot_0_check[0]
@@ -1363,69 +1363,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                     _slot_local__1 = AtomExp_it_1
                     lcl_2 = (True, _slot_local__1)
                 lcl_1 = lcl_2
-            elif (lcl_2 == 19):
-                lcl_2 = parse_Nest(prim__state, prim__tokens)
-                _slot_0_check = lcl_2
-                lcl_2 = _slot_0_check[0]
-                lcl_2 = (lcl_2 is False)
-                if lcl_2:
-                    lcl_2 = _slot_0_check
-                else:
-                    lcl_3 = _slot_0_check[1]
-                    lcl_3 = lcl_3
-                    _slot_0 = lcl_3
-                    AtomExp_it_1 = _slot_0
-                    _slot_local__1 = AtomExp_it_1
-                    lcl_3 = (True, _slot_local__1)
-                    lcl_2 = lcl_3
-                lcl_1 = lcl_2
-            elif (lcl_2 == 24):
-                lcl_2 = parse_Match(prim__state, prim__tokens)
-                _slot_0_check = lcl_2
-                lcl_3 = _slot_0_check[0]
-                lcl_2 = (lcl_3 is False)
-                if lcl_2:
-                    lcl_2 = _slot_0_check
-                else:
-                    lcl_2 = _slot_0_check[1]
-                    lcl_2 = lcl_2
-                    _slot_0 = lcl_2
-                    AtomExp_it_1 = _slot_0
-                    _slot_local__1 = AtomExp_it_1
-                    lcl_2 = (True, _slot_local__1)
-                lcl_1 = lcl_2
-            elif (lcl_2 == 15):
-                lcl_2 = parse_Lam(prim__state, prim__tokens)
-                _slot_0_check = lcl_2
-                lcl_2 = _slot_0_check[0]
-                lcl_2 = (lcl_2 is False)
-                if lcl_2:
-                    lcl_2 = _slot_0_check
-                else:
-                    lcl_3 = _slot_0_check[1]
-                    lcl_3 = lcl_3
-                    _slot_0 = lcl_3
-                    AtomExp_it_1 = _slot_0
-                    _slot_local__1 = AtomExp_it_1
-                    lcl_3 = (True, _slot_local__1)
-                    lcl_2 = lcl_3
-                lcl_1 = lcl_2
-            elif (lcl_2 == 20):
-                lcl_2 = parse_Nest(prim__state, prim__tokens)
-                _slot_0_check = lcl_2
-                lcl_3 = _slot_0_check[0]
-                lcl_2 = (lcl_3 is False)
-                if lcl_2:
-                    lcl_2 = _slot_0_check
-                else:
-                    lcl_2 = _slot_0_check[1]
-                    lcl_2 = lcl_2
-                    _slot_0 = lcl_2
-                    AtomExp_it_1 = _slot_0
-                    _slot_local__1 = AtomExp_it_1
-                    lcl_2 = (True, _slot_local__1)
-                lcl_1 = lcl_2
-            elif (lcl_2 == 21):
+            elif (lcl_2 == 30):
                 lcl_2 = parse_Nest(prim__state, prim__tokens)
                 _slot_0_check = lcl_2
                 lcl_2 = _slot_0_check[0]
@@ -1456,6 +1394,68 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                     _slot_local__1 = AtomExp_it_1
                     lcl_2 = (True, _slot_local__1)
                 lcl_1 = lcl_2
+            elif (lcl_2 == 23):
+                lcl_2 = parse_Match(prim__state, prim__tokens)
+                _slot_0_check = lcl_2
+                lcl_2 = _slot_0_check[0]
+                lcl_2 = (lcl_2 is False)
+                if lcl_2:
+                    lcl_2 = _slot_0_check
+                else:
+                    lcl_3 = _slot_0_check[1]
+                    lcl_3 = lcl_3
+                    _slot_0 = lcl_3
+                    AtomExp_it_1 = _slot_0
+                    _slot_local__1 = AtomExp_it_1
+                    lcl_3 = (True, _slot_local__1)
+                    lcl_2 = lcl_3
+                lcl_1 = lcl_2
+            elif (lcl_2 == 15):
+                lcl_2 = parse_Lam(prim__state, prim__tokens)
+                _slot_0_check = lcl_2
+                lcl_3 = _slot_0_check[0]
+                lcl_2 = (lcl_3 is False)
+                if lcl_2:
+                    lcl_2 = _slot_0_check
+                else:
+                    lcl_2 = _slot_0_check[1]
+                    lcl_2 = lcl_2
+                    _slot_0 = lcl_2
+                    AtomExp_it_1 = _slot_0
+                    _slot_local__1 = AtomExp_it_1
+                    lcl_2 = (True, _slot_local__1)
+                lcl_1 = lcl_2
+            elif (lcl_2 == 19):
+                lcl_2 = parse_Nest(prim__state, prim__tokens)
+                _slot_0_check = lcl_2
+                lcl_2 = _slot_0_check[0]
+                lcl_2 = (lcl_2 is False)
+                if lcl_2:
+                    lcl_2 = _slot_0_check
+                else:
+                    lcl_3 = _slot_0_check[1]
+                    lcl_3 = lcl_3
+                    _slot_0 = lcl_3
+                    AtomExp_it_1 = _slot_0
+                    _slot_local__1 = AtomExp_it_1
+                    lcl_3 = (True, _slot_local__1)
+                    lcl_2 = lcl_3
+                lcl_1 = lcl_2
+            elif (lcl_2 == 20):
+                lcl_2 = parse_Nest(prim__state, prim__tokens)
+                _slot_0_check = lcl_2
+                lcl_3 = _slot_0_check[0]
+                lcl_2 = (lcl_3 is False)
+                if lcl_2:
+                    lcl_2 = _slot_0_check
+                else:
+                    lcl_2 = _slot_0_check[1]
+                    lcl_2 = lcl_2
+                    _slot_0 = lcl_2
+                    AtomExp_it_1 = _slot_0
+                    _slot_local__1 = AtomExp_it_1
+                    lcl_2 = (True, _slot_local__1)
+                lcl_1 = lcl_2
             elif (lcl_2 == 13):
                 lcl_2 = parse_Nest(prim__state, prim__tokens)
                 _slot_0_check = lcl_2
@@ -1472,7 +1472,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                     lcl_3 = (True, _slot_local__1)
                     lcl_2 = lcl_3
                 lcl_1 = lcl_2
-            elif (lcl_2 == 29):
+            elif (lcl_2 == 28):
                 lcl_2 = parse_Nest(prim__state, prim__tokens)
                 _slot_0_check = lcl_2
                 lcl_3 = _slot_0_check[0]
@@ -1503,7 +1503,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                     lcl_3 = (True, _slot_local__1)
                     lcl_2 = lcl_3
                 lcl_1 = lcl_2
-            elif (lcl_2 == 32):
+            elif (lcl_2 == 31):
                 lcl_2 = parse_Nest(prim__state, prim__tokens)
                 _slot_0_check = lcl_2
                 lcl_3 = _slot_0_check[0]
@@ -1540,7 +1540,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
         if lcl_0:
             lcl_2 = prim__tokens.array[(prim__tokens.offset + 0)]
             lcl_2 = lcl_2.idint
-            if (lcl_2 == 19):
+            if (lcl_2 == 18):
                 _py_local_i = prim__tokens.offset
                 _py_local_t = prim__tokens.array[_py_local_i]
                 prim__tokens.offset = (_py_local_i + 1)
@@ -1552,7 +1552,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                 _slot_local__1 = lcl_2
                 lcl_2 = (True, _slot_local__1)
                 lcl_1 = lcl_2
-            elif (lcl_2 == 20):
+            elif (lcl_2 == 19):
                 _py_local_i = prim__tokens.offset
                 _py_local_t = prim__tokens.array[_py_local_i]
                 prim__tokens.offset = (_py_local_i + 1)
@@ -1586,7 +1586,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
         if lcl_0:
             lcl_2 = prim__tokens.array[(prim__tokens.offset + 0)]
             lcl_2 = lcl_2.idint
-            if (lcl_2 == 19):
+            if (lcl_2 == 18):
                 _py_local_i = prim__tokens.offset
                 _py_local_t = prim__tokens.array[_py_local_i]
                 prim__tokens.offset = (_py_local_i + 1)
@@ -1598,7 +1598,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                 _slot_local__1 = lcl_2
                 lcl_2 = (True, _slot_local__1)
                 lcl_1 = lcl_2
-            elif (lcl_2 == 20):
+            elif (lcl_2 == 19):
                 _py_local_i = prim__tokens.offset
                 _py_local_t = prim__tokens.array[_py_local_i]
                 prim__tokens.offset = (_py_local_i + 1)
@@ -1644,7 +1644,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
         return lcl_0
 
     def parse_CaseExp(prim__state, prim__tokens):
-        lcl_0 = 26
+        lcl_0 = 25
         try:
             _py_local_tk = prim__tokens.array[prim__tokens.offset]
             if (_py_local_tk.idint is lcl_0):
@@ -1680,7 +1680,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                 if lcl_1:
                     lcl_3 = prim__tokens.array[(prim__tokens.offset + 0)]
                     lcl_3 = lcl_3.idint
-                    if (lcl_3 == 27):
+                    if (lcl_3 == 26):
                         _py_local_i = prim__tokens.offset
                         _py_local_t = prim__tokens.array[_py_local_i]
                         prim__tokens.offset = (_py_local_i + 1)
@@ -1790,7 +1790,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
         return lcl_0
 
     def parse_ChrCase(prim__state, prim__tokens):
-        lcl_0 = 32
+        lcl_0 = 31
         try:
             _py_local_tk = prim__tokens.array[prim__tokens.offset]
             if (_py_local_tk.idint is lcl_0):
@@ -1817,7 +1817,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
         return lcl_0
 
     def parse_ChrExpr(prim__state, prim__tokens):
-        lcl_0 = 32
+        lcl_0 = 31
         try:
             _py_local_tk = prim__tokens.array[prim__tokens.offset]
             if (_py_local_tk.idint is lcl_0):
@@ -1941,7 +1941,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
         if lcl_0:
             lcl_2 = prim__tokens.array[(prim__tokens.offset + 0)]
             lcl_2 = lcl_2.idint
-            if (lcl_2 == 31):
+            if (lcl_2 == 32):
                 lcl_2 = parse_App(prim__state, prim__tokens)
                 _slot_0_check = lcl_2
                 lcl_2 = _slot_0_check[0]
@@ -1957,7 +1957,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                     lcl_2 = lr_loop_Exp(_slot_local__1, prim__state, prim__tokens)
                     lcl_2 = (True, lcl_2)
                 lcl_1 = lcl_2
-            elif (lcl_2 == 19):
+            elif (lcl_2 == 30):
                 lcl_2 = parse_App(prim__state, prim__tokens)
                 _slot_0_check = lcl_2
                 lcl_2 = _slot_0_check[0]
@@ -1973,7 +1973,23 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                     lcl_2 = lr_loop_Exp(_slot_local__1, prim__state, prim__tokens)
                     lcl_2 = (True, lcl_2)
                 lcl_1 = lcl_2
-            elif (lcl_2 == 24):
+            elif (lcl_2 == 18):
+                lcl_2 = parse_App(prim__state, prim__tokens)
+                _slot_0_check = lcl_2
+                lcl_2 = _slot_0_check[0]
+                lcl_2 = (lcl_2 is False)
+                if lcl_2:
+                    lcl_2 = _slot_0_check
+                else:
+                    lcl_2 = _slot_0_check[1]
+                    lcl_2 = lcl_2
+                    _slot_0 = lcl_2
+                    Exp_it_1 = _slot_0
+                    _slot_local__1 = Exp_it_1
+                    lcl_2 = lr_loop_Exp(_slot_local__1, prim__state, prim__tokens)
+                    lcl_2 = (True, lcl_2)
+                lcl_1 = lcl_2
+            elif (lcl_2 == 23):
                 lcl_2 = parse_App(prim__state, prim__tokens)
                 _slot_0_check = lcl_2
                 lcl_2 = _slot_0_check[0]
@@ -2037,39 +2053,23 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                     lcl_2 = lr_loop_Exp(_slot_local__1, prim__state, prim__tokens)
                     lcl_2 = (True, lcl_2)
                 lcl_1 = lcl_2
+            elif (lcl_2 == 19):
+                lcl_2 = parse_App(prim__state, prim__tokens)
+                _slot_0_check = lcl_2
+                lcl_2 = _slot_0_check[0]
+                lcl_2 = (lcl_2 is False)
+                if lcl_2:
+                    lcl_2 = _slot_0_check
+                else:
+                    lcl_2 = _slot_0_check[1]
+                    lcl_2 = lcl_2
+                    _slot_0 = lcl_2
+                    Exp_it_1 = _slot_0
+                    _slot_local__1 = Exp_it_1
+                    lcl_2 = lr_loop_Exp(_slot_local__1, prim__state, prim__tokens)
+                    lcl_2 = (True, lcl_2)
+                lcl_1 = lcl_2
             elif (lcl_2 == 20):
-                lcl_2 = parse_App(prim__state, prim__tokens)
-                _slot_0_check = lcl_2
-                lcl_2 = _slot_0_check[0]
-                lcl_2 = (lcl_2 is False)
-                if lcl_2:
-                    lcl_2 = _slot_0_check
-                else:
-                    lcl_2 = _slot_0_check[1]
-                    lcl_2 = lcl_2
-                    _slot_0 = lcl_2
-                    Exp_it_1 = _slot_0
-                    _slot_local__1 = Exp_it_1
-                    lcl_2 = lr_loop_Exp(_slot_local__1, prim__state, prim__tokens)
-                    lcl_2 = (True, lcl_2)
-                lcl_1 = lcl_2
-            elif (lcl_2 == 21):
-                lcl_2 = parse_App(prim__state, prim__tokens)
-                _slot_0_check = lcl_2
-                lcl_2 = _slot_0_check[0]
-                lcl_2 = (lcl_2 is False)
-                if lcl_2:
-                    lcl_2 = _slot_0_check
-                else:
-                    lcl_2 = _slot_0_check[1]
-                    lcl_2 = lcl_2
-                    _slot_0 = lcl_2
-                    Exp_it_1 = _slot_0
-                    _slot_local__1 = Exp_it_1
-                    lcl_2 = lr_loop_Exp(_slot_local__1, prim__state, prim__tokens)
-                    lcl_2 = (True, lcl_2)
-                lcl_1 = lcl_2
-            elif (lcl_2 == 18):
                 lcl_2 = parse_App(prim__state, prim__tokens)
                 _slot_0_check = lcl_2
                 lcl_2 = _slot_0_check[0]
@@ -2101,7 +2101,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                     lcl_2 = lr_loop_Exp(_slot_local__1, prim__state, prim__tokens)
                     lcl_2 = (True, lcl_2)
                 lcl_1 = lcl_2
-            elif (lcl_2 == 29):
+            elif (lcl_2 == 28):
                 lcl_2 = parse_App(prim__state, prim__tokens)
                 _slot_0_check = lcl_2
                 lcl_2 = _slot_0_check[0]
@@ -2133,7 +2133,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                     lcl_2 = lr_loop_Exp(_slot_local__1, prim__state, prim__tokens)
                     lcl_2 = (True, lcl_2)
                 lcl_1 = lcl_2
-            elif (lcl_2 == 32):
+            elif (lcl_2 == 31):
                 lcl_2 = parse_App(prim__state, prim__tokens)
                 _slot_0_check = lcl_2
                 lcl_2 = _slot_0_check[0]
@@ -2779,7 +2779,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
         return lcl_0
 
     def parse_List(prim__state, prim__tokens):
-        lcl_0 = 21
+        lcl_0 = 20
         try:
             _py_local_tk = prim__tokens.array[prim__tokens.offset]
             if (_py_local_tk.idint is lcl_0):
@@ -2804,7 +2804,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
             if lcl_0:
                 lcl_1 = prim__tokens.array[(prim__tokens.offset + 0)]
                 lcl_1 = lcl_1.idint
-                if (lcl_1 == 31):
+                if (lcl_1 == 32):
                     lcl_1 = parse_CommaExps(prim__state, prim__tokens)
                     _slot_1_check = lcl_1
                     lcl_1 = _slot_1_check[0]
@@ -2822,7 +2822,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                         if lcl_1:
                             lcl_3 = prim__tokens.array[(prim__tokens.offset + 0)]
                             lcl_3 = lcl_3.idint
-                            if (lcl_3 == 22):
+                            if (lcl_3 == 21):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -2839,7 +2839,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                     lcl_4 = lcl_4
                                     _slot_3 = lcl_4
                                     List_tl_3 = _slot_3
-                                    lcl_4 = 23
+                                    lcl_4 = 22
                                     try:
                                         _py_local_tk = prim__tokens.array[prim__tokens.offset]
                                         if (_py_local_tk.idint is lcl_4):
@@ -2864,7 +2864,520 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                         lcl_4 = (True, _slot_local__1)
                                     lcl_3 = lcl_4
                                 lcl_2 = lcl_3
-                            elif (lcl_3 == 23):
+                            elif (lcl_3 == 22):
+                                _py_local_i = prim__tokens.offset
+                                _py_local_t = prim__tokens.array[_py_local_i]
+                                prim__tokens.offset = (_py_local_i + 1)
+                                lcl_3 = _py_local_t
+                                _slot_2 = lcl_3
+                                lcl_3 = MKLRCommaList(List_a_2)
+                                lcl_3 = List(lcl_3, none)
+                                _slot_local__1 = lcl_3
+                                lcl_3 = (True, _slot_local__1)
+                                lcl_2 = lcl_3
+                            else:
+                                lcl_3 = (_off_2, 'List lookahead failed')
+                                lcl_3 = prim__cons(lcl_3, prim__nil)
+                                lcl_3 = lcl_3
+                                lcl_3 = (False, lcl_3)
+                                lcl_2 = lcl_3
+                            lcl_1 = lcl_2
+                        else:
+                            lcl_2 = (_off_2, 'List got EOF')
+                            lcl_3 = prim__cons(lcl_2, prim__nil)
+                            lcl_2 = lcl_3
+                            lcl_2 = (False, lcl_2)
+                            lcl_1 = lcl_2
+                    lcl_0 = lcl_1
+                elif (lcl_1 == 30):
+                    lcl_1 = parse_CommaExps(prim__state, prim__tokens)
+                    _slot_1_check = lcl_1
+                    lcl_1 = _slot_1_check[0]
+                    lcl_1 = (lcl_1 is False)
+                    if lcl_1:
+                        lcl_1 = _slot_1_check
+                    else:
+                        lcl_2 = _slot_1_check[1]
+                        lcl_2 = lcl_2
+                        _slot_1 = lcl_2
+                        List_a_2 = _slot_1
+                        lcl_2 = prim__tokens.offset
+                        _off_2 = lcl_2
+                        lcl_2 = (len(prim__tokens.array) > (prim__tokens.offset + 0))
+                        if lcl_2:
+                            lcl_4 = prim__tokens.array[(prim__tokens.offset + 0)]
+                            lcl_4 = lcl_4.idint
+                            if (lcl_4 == 21):
+                                _py_local_i = prim__tokens.offset
+                                _py_local_t = prim__tokens.array[_py_local_i]
+                                prim__tokens.offset = (_py_local_i + 1)
+                                lcl_4 = _py_local_t
+                                _slot_2 = lcl_4
+                                lcl_4 = parse_Case(prim__state, prim__tokens)
+                                _slot_3_check = lcl_4
+                                lcl_4 = _slot_3_check[0]
+                                lcl_4 = (lcl_4 is False)
+                                if lcl_4:
+                                    lcl_4 = _slot_3_check
+                                else:
+                                    lcl_5 = _slot_3_check[1]
+                                    lcl_5 = lcl_5
+                                    _slot_3 = lcl_5
+                                    List_tl_3 = _slot_3
+                                    lcl_5 = 22
+                                    try:
+                                        _py_local_tk = prim__tokens.array[prim__tokens.offset]
+                                        if (_py_local_tk.idint is lcl_5):
+                                            prim__tokens.offset += 1
+                                        else:
+                                            _py_local_tk = None
+                                    except IndexError:
+                                        _py_local_tk = None
+                                    lcl_5 = _py_local_tk
+                                    _slot_4 = lcl_5
+                                    lcl_5 = (_slot_4 is None)
+                                    if lcl_5:
+                                        lcl_5 = prim__tokens.offset
+                                        lcl_5 = (lcl_5, 'quote ] not match')
+                                        lcl_5 = prim__cons(lcl_5, prim__nil)
+                                        lcl_5 = lcl_5
+                                        lcl_5 = (False, lcl_5)
+                                    else:
+                                        lcl_5 = MKLRCommaList(List_a_2)
+                                        lcl_5 = List(lcl_5, List_tl_3)
+                                        _slot_local__1 = lcl_5
+                                        lcl_5 = (True, _slot_local__1)
+                                    lcl_4 = lcl_5
+                                lcl_3 = lcl_4
+                            elif (lcl_4 == 22):
+                                _py_local_i = prim__tokens.offset
+                                _py_local_t = prim__tokens.array[_py_local_i]
+                                prim__tokens.offset = (_py_local_i + 1)
+                                lcl_4 = _py_local_t
+                                _slot_2 = lcl_4
+                                lcl_4 = MKLRCommaList(List_a_2)
+                                lcl_4 = List(lcl_4, none)
+                                _slot_local__1 = lcl_4
+                                lcl_4 = (True, _slot_local__1)
+                                lcl_3 = lcl_4
+                            else:
+                                lcl_4 = (_off_2, 'List lookahead failed')
+                                lcl_4 = prim__cons(lcl_4, prim__nil)
+                                lcl_4 = lcl_4
+                                lcl_4 = (False, lcl_4)
+                                lcl_3 = lcl_4
+                            lcl_2 = lcl_3
+                        else:
+                            lcl_3 = (_off_2, 'List got EOF')
+                            lcl_4 = prim__cons(lcl_3, prim__nil)
+                            lcl_3 = lcl_4
+                            lcl_3 = (False, lcl_3)
+                            lcl_2 = lcl_3
+                        lcl_1 = lcl_2
+                    lcl_0 = lcl_1
+                elif (lcl_1 == 18):
+                    lcl_1 = parse_CommaExps(prim__state, prim__tokens)
+                    _slot_1_check = lcl_1
+                    lcl_2 = _slot_1_check[0]
+                    lcl_1 = (lcl_2 is False)
+                    if lcl_1:
+                        lcl_1 = _slot_1_check
+                    else:
+                        lcl_1 = _slot_1_check[1]
+                        lcl_1 = lcl_1
+                        _slot_1 = lcl_1
+                        List_a_2 = _slot_1
+                        lcl_1 = prim__tokens.offset
+                        _off_2 = lcl_1
+                        lcl_1 = (len(prim__tokens.array) > (prim__tokens.offset + 0))
+                        if lcl_1:
+                            lcl_3 = prim__tokens.array[(prim__tokens.offset + 0)]
+                            lcl_3 = lcl_3.idint
+                            if (lcl_3 == 21):
+                                _py_local_i = prim__tokens.offset
+                                _py_local_t = prim__tokens.array[_py_local_i]
+                                prim__tokens.offset = (_py_local_i + 1)
+                                lcl_3 = _py_local_t
+                                _slot_2 = lcl_3
+                                lcl_3 = parse_Case(prim__state, prim__tokens)
+                                _slot_3_check = lcl_3
+                                lcl_3 = _slot_3_check[0]
+                                lcl_3 = (lcl_3 is False)
+                                if lcl_3:
+                                    lcl_3 = _slot_3_check
+                                else:
+                                    lcl_4 = _slot_3_check[1]
+                                    lcl_4 = lcl_4
+                                    _slot_3 = lcl_4
+                                    List_tl_3 = _slot_3
+                                    lcl_4 = 22
+                                    try:
+                                        _py_local_tk = prim__tokens.array[prim__tokens.offset]
+                                        if (_py_local_tk.idint is lcl_4):
+                                            prim__tokens.offset += 1
+                                        else:
+                                            _py_local_tk = None
+                                    except IndexError:
+                                        _py_local_tk = None
+                                    lcl_4 = _py_local_tk
+                                    _slot_4 = lcl_4
+                                    lcl_4 = (_slot_4 is None)
+                                    if lcl_4:
+                                        lcl_4 = prim__tokens.offset
+                                        lcl_4 = (lcl_4, 'quote ] not match')
+                                        lcl_4 = prim__cons(lcl_4, prim__nil)
+                                        lcl_4 = lcl_4
+                                        lcl_4 = (False, lcl_4)
+                                    else:
+                                        lcl_4 = MKLRCommaList(List_a_2)
+                                        lcl_4 = List(lcl_4, List_tl_3)
+                                        _slot_local__1 = lcl_4
+                                        lcl_4 = (True, _slot_local__1)
+                                    lcl_3 = lcl_4
+                                lcl_2 = lcl_3
+                            elif (lcl_3 == 22):
+                                _py_local_i = prim__tokens.offset
+                                _py_local_t = prim__tokens.array[_py_local_i]
+                                prim__tokens.offset = (_py_local_i + 1)
+                                lcl_3 = _py_local_t
+                                _slot_2 = lcl_3
+                                lcl_3 = MKLRCommaList(List_a_2)
+                                lcl_3 = List(lcl_3, none)
+                                _slot_local__1 = lcl_3
+                                lcl_3 = (True, _slot_local__1)
+                                lcl_2 = lcl_3
+                            else:
+                                lcl_3 = (_off_2, 'List lookahead failed')
+                                lcl_3 = prim__cons(lcl_3, prim__nil)
+                                lcl_3 = lcl_3
+                                lcl_3 = (False, lcl_3)
+                                lcl_2 = lcl_3
+                            lcl_1 = lcl_2
+                        else:
+                            lcl_2 = (_off_2, 'List got EOF')
+                            lcl_3 = prim__cons(lcl_2, prim__nil)
+                            lcl_2 = lcl_3
+                            lcl_2 = (False, lcl_2)
+                            lcl_1 = lcl_2
+                    lcl_0 = lcl_1
+                elif (lcl_1 == 23):
+                    lcl_1 = parse_CommaExps(prim__state, prim__tokens)
+                    _slot_1_check = lcl_1
+                    lcl_1 = _slot_1_check[0]
+                    lcl_1 = (lcl_1 is False)
+                    if lcl_1:
+                        lcl_1 = _slot_1_check
+                    else:
+                        lcl_2 = _slot_1_check[1]
+                        lcl_2 = lcl_2
+                        _slot_1 = lcl_2
+                        List_a_2 = _slot_1
+                        lcl_2 = prim__tokens.offset
+                        _off_2 = lcl_2
+                        lcl_2 = (len(prim__tokens.array) > (prim__tokens.offset + 0))
+                        if lcl_2:
+                            lcl_4 = prim__tokens.array[(prim__tokens.offset + 0)]
+                            lcl_4 = lcl_4.idint
+                            if (lcl_4 == 21):
+                                _py_local_i = prim__tokens.offset
+                                _py_local_t = prim__tokens.array[_py_local_i]
+                                prim__tokens.offset = (_py_local_i + 1)
+                                lcl_4 = _py_local_t
+                                _slot_2 = lcl_4
+                                lcl_4 = parse_Case(prim__state, prim__tokens)
+                                _slot_3_check = lcl_4
+                                lcl_4 = _slot_3_check[0]
+                                lcl_4 = (lcl_4 is False)
+                                if lcl_4:
+                                    lcl_4 = _slot_3_check
+                                else:
+                                    lcl_5 = _slot_3_check[1]
+                                    lcl_5 = lcl_5
+                                    _slot_3 = lcl_5
+                                    List_tl_3 = _slot_3
+                                    lcl_5 = 22
+                                    try:
+                                        _py_local_tk = prim__tokens.array[prim__tokens.offset]
+                                        if (_py_local_tk.idint is lcl_5):
+                                            prim__tokens.offset += 1
+                                        else:
+                                            _py_local_tk = None
+                                    except IndexError:
+                                        _py_local_tk = None
+                                    lcl_5 = _py_local_tk
+                                    _slot_4 = lcl_5
+                                    lcl_5 = (_slot_4 is None)
+                                    if lcl_5:
+                                        lcl_5 = prim__tokens.offset
+                                        lcl_5 = (lcl_5, 'quote ] not match')
+                                        lcl_5 = prim__cons(lcl_5, prim__nil)
+                                        lcl_5 = lcl_5
+                                        lcl_5 = (False, lcl_5)
+                                    else:
+                                        lcl_5 = MKLRCommaList(List_a_2)
+                                        lcl_5 = List(lcl_5, List_tl_3)
+                                        _slot_local__1 = lcl_5
+                                        lcl_5 = (True, _slot_local__1)
+                                    lcl_4 = lcl_5
+                                lcl_3 = lcl_4
+                            elif (lcl_4 == 22):
+                                _py_local_i = prim__tokens.offset
+                                _py_local_t = prim__tokens.array[_py_local_i]
+                                prim__tokens.offset = (_py_local_i + 1)
+                                lcl_4 = _py_local_t
+                                _slot_2 = lcl_4
+                                lcl_4 = MKLRCommaList(List_a_2)
+                                lcl_4 = List(lcl_4, none)
+                                _slot_local__1 = lcl_4
+                                lcl_4 = (True, _slot_local__1)
+                                lcl_3 = lcl_4
+                            else:
+                                lcl_4 = (_off_2, 'List lookahead failed')
+                                lcl_4 = prim__cons(lcl_4, prim__nil)
+                                lcl_4 = lcl_4
+                                lcl_4 = (False, lcl_4)
+                                lcl_3 = lcl_4
+                            lcl_2 = lcl_3
+                        else:
+                            lcl_3 = (_off_2, 'List got EOF')
+                            lcl_4 = prim__cons(lcl_3, prim__nil)
+                            lcl_3 = lcl_4
+                            lcl_3 = (False, lcl_3)
+                            lcl_2 = lcl_3
+                        lcl_1 = lcl_2
+                    lcl_0 = lcl_1
+                elif (lcl_1 == 3):
+                    lcl_1 = parse_CommaExps(prim__state, prim__tokens)
+                    _slot_1_check = lcl_1
+                    lcl_2 = _slot_1_check[0]
+                    lcl_1 = (lcl_2 is False)
+                    if lcl_1:
+                        lcl_1 = _slot_1_check
+                    else:
+                        lcl_1 = _slot_1_check[1]
+                        lcl_1 = lcl_1
+                        _slot_1 = lcl_1
+                        List_a_2 = _slot_1
+                        lcl_1 = prim__tokens.offset
+                        _off_2 = lcl_1
+                        lcl_1 = (len(prim__tokens.array) > (prim__tokens.offset + 0))
+                        if lcl_1:
+                            lcl_3 = prim__tokens.array[(prim__tokens.offset + 0)]
+                            lcl_3 = lcl_3.idint
+                            if (lcl_3 == 21):
+                                _py_local_i = prim__tokens.offset
+                                _py_local_t = prim__tokens.array[_py_local_i]
+                                prim__tokens.offset = (_py_local_i + 1)
+                                lcl_3 = _py_local_t
+                                _slot_2 = lcl_3
+                                lcl_3 = parse_Case(prim__state, prim__tokens)
+                                _slot_3_check = lcl_3
+                                lcl_3 = _slot_3_check[0]
+                                lcl_3 = (lcl_3 is False)
+                                if lcl_3:
+                                    lcl_3 = _slot_3_check
+                                else:
+                                    lcl_4 = _slot_3_check[1]
+                                    lcl_4 = lcl_4
+                                    _slot_3 = lcl_4
+                                    List_tl_3 = _slot_3
+                                    lcl_4 = 22
+                                    try:
+                                        _py_local_tk = prim__tokens.array[prim__tokens.offset]
+                                        if (_py_local_tk.idint is lcl_4):
+                                            prim__tokens.offset += 1
+                                        else:
+                                            _py_local_tk = None
+                                    except IndexError:
+                                        _py_local_tk = None
+                                    lcl_4 = _py_local_tk
+                                    _slot_4 = lcl_4
+                                    lcl_4 = (_slot_4 is None)
+                                    if lcl_4:
+                                        lcl_4 = prim__tokens.offset
+                                        lcl_4 = (lcl_4, 'quote ] not match')
+                                        lcl_4 = prim__cons(lcl_4, prim__nil)
+                                        lcl_4 = lcl_4
+                                        lcl_4 = (False, lcl_4)
+                                    else:
+                                        lcl_4 = MKLRCommaList(List_a_2)
+                                        lcl_4 = List(lcl_4, List_tl_3)
+                                        _slot_local__1 = lcl_4
+                                        lcl_4 = (True, _slot_local__1)
+                                    lcl_3 = lcl_4
+                                lcl_2 = lcl_3
+                            elif (lcl_3 == 22):
+                                _py_local_i = prim__tokens.offset
+                                _py_local_t = prim__tokens.array[_py_local_i]
+                                prim__tokens.offset = (_py_local_i + 1)
+                                lcl_3 = _py_local_t
+                                _slot_2 = lcl_3
+                                lcl_3 = MKLRCommaList(List_a_2)
+                                lcl_3 = List(lcl_3, none)
+                                _slot_local__1 = lcl_3
+                                lcl_3 = (True, _slot_local__1)
+                                lcl_2 = lcl_3
+                            else:
+                                lcl_3 = (_off_2, 'List lookahead failed')
+                                lcl_3 = prim__cons(lcl_3, prim__nil)
+                                lcl_3 = lcl_3
+                                lcl_3 = (False, lcl_3)
+                                lcl_2 = lcl_3
+                            lcl_1 = lcl_2
+                        else:
+                            lcl_2 = (_off_2, 'List got EOF')
+                            lcl_3 = prim__cons(lcl_2, prim__nil)
+                            lcl_2 = lcl_3
+                            lcl_2 = (False, lcl_2)
+                            lcl_1 = lcl_2
+                    lcl_0 = lcl_1
+                elif (lcl_1 == 10):
+                    lcl_1 = parse_CommaExps(prim__state, prim__tokens)
+                    _slot_1_check = lcl_1
+                    lcl_1 = _slot_1_check[0]
+                    lcl_1 = (lcl_1 is False)
+                    if lcl_1:
+                        lcl_1 = _slot_1_check
+                    else:
+                        lcl_2 = _slot_1_check[1]
+                        lcl_2 = lcl_2
+                        _slot_1 = lcl_2
+                        List_a_2 = _slot_1
+                        lcl_2 = prim__tokens.offset
+                        _off_2 = lcl_2
+                        lcl_2 = (len(prim__tokens.array) > (prim__tokens.offset + 0))
+                        if lcl_2:
+                            lcl_4 = prim__tokens.array[(prim__tokens.offset + 0)]
+                            lcl_4 = lcl_4.idint
+                            if (lcl_4 == 21):
+                                _py_local_i = prim__tokens.offset
+                                _py_local_t = prim__tokens.array[_py_local_i]
+                                prim__tokens.offset = (_py_local_i + 1)
+                                lcl_4 = _py_local_t
+                                _slot_2 = lcl_4
+                                lcl_4 = parse_Case(prim__state, prim__tokens)
+                                _slot_3_check = lcl_4
+                                lcl_4 = _slot_3_check[0]
+                                lcl_4 = (lcl_4 is False)
+                                if lcl_4:
+                                    lcl_4 = _slot_3_check
+                                else:
+                                    lcl_5 = _slot_3_check[1]
+                                    lcl_5 = lcl_5
+                                    _slot_3 = lcl_5
+                                    List_tl_3 = _slot_3
+                                    lcl_5 = 22
+                                    try:
+                                        _py_local_tk = prim__tokens.array[prim__tokens.offset]
+                                        if (_py_local_tk.idint is lcl_5):
+                                            prim__tokens.offset += 1
+                                        else:
+                                            _py_local_tk = None
+                                    except IndexError:
+                                        _py_local_tk = None
+                                    lcl_5 = _py_local_tk
+                                    _slot_4 = lcl_5
+                                    lcl_5 = (_slot_4 is None)
+                                    if lcl_5:
+                                        lcl_5 = prim__tokens.offset
+                                        lcl_5 = (lcl_5, 'quote ] not match')
+                                        lcl_5 = prim__cons(lcl_5, prim__nil)
+                                        lcl_5 = lcl_5
+                                        lcl_5 = (False, lcl_5)
+                                    else:
+                                        lcl_5 = MKLRCommaList(List_a_2)
+                                        lcl_5 = List(lcl_5, List_tl_3)
+                                        _slot_local__1 = lcl_5
+                                        lcl_5 = (True, _slot_local__1)
+                                    lcl_4 = lcl_5
+                                lcl_3 = lcl_4
+                            elif (lcl_4 == 22):
+                                _py_local_i = prim__tokens.offset
+                                _py_local_t = prim__tokens.array[_py_local_i]
+                                prim__tokens.offset = (_py_local_i + 1)
+                                lcl_4 = _py_local_t
+                                _slot_2 = lcl_4
+                                lcl_4 = MKLRCommaList(List_a_2)
+                                lcl_4 = List(lcl_4, none)
+                                _slot_local__1 = lcl_4
+                                lcl_4 = (True, _slot_local__1)
+                                lcl_3 = lcl_4
+                            else:
+                                lcl_4 = (_off_2, 'List lookahead failed')
+                                lcl_4 = prim__cons(lcl_4, prim__nil)
+                                lcl_4 = lcl_4
+                                lcl_4 = (False, lcl_4)
+                                lcl_3 = lcl_4
+                            lcl_2 = lcl_3
+                        else:
+                            lcl_3 = (_off_2, 'List got EOF')
+                            lcl_4 = prim__cons(lcl_3, prim__nil)
+                            lcl_3 = lcl_4
+                            lcl_3 = (False, lcl_3)
+                            lcl_2 = lcl_3
+                        lcl_1 = lcl_2
+                    lcl_0 = lcl_1
+                elif (lcl_1 == 15):
+                    lcl_1 = parse_CommaExps(prim__state, prim__tokens)
+                    _slot_1_check = lcl_1
+                    lcl_2 = _slot_1_check[0]
+                    lcl_1 = (lcl_2 is False)
+                    if lcl_1:
+                        lcl_1 = _slot_1_check
+                    else:
+                        lcl_1 = _slot_1_check[1]
+                        lcl_1 = lcl_1
+                        _slot_1 = lcl_1
+                        List_a_2 = _slot_1
+                        lcl_1 = prim__tokens.offset
+                        _off_2 = lcl_1
+                        lcl_1 = (len(prim__tokens.array) > (prim__tokens.offset + 0))
+                        if lcl_1:
+                            lcl_3 = prim__tokens.array[(prim__tokens.offset + 0)]
+                            lcl_3 = lcl_3.idint
+                            if (lcl_3 == 21):
+                                _py_local_i = prim__tokens.offset
+                                _py_local_t = prim__tokens.array[_py_local_i]
+                                prim__tokens.offset = (_py_local_i + 1)
+                                lcl_3 = _py_local_t
+                                _slot_2 = lcl_3
+                                lcl_3 = parse_Case(prim__state, prim__tokens)
+                                _slot_3_check = lcl_3
+                                lcl_3 = _slot_3_check[0]
+                                lcl_3 = (lcl_3 is False)
+                                if lcl_3:
+                                    lcl_3 = _slot_3_check
+                                else:
+                                    lcl_4 = _slot_3_check[1]
+                                    lcl_4 = lcl_4
+                                    _slot_3 = lcl_4
+                                    List_tl_3 = _slot_3
+                                    lcl_4 = 22
+                                    try:
+                                        _py_local_tk = prim__tokens.array[prim__tokens.offset]
+                                        if (_py_local_tk.idint is lcl_4):
+                                            prim__tokens.offset += 1
+                                        else:
+                                            _py_local_tk = None
+                                    except IndexError:
+                                        _py_local_tk = None
+                                    lcl_4 = _py_local_tk
+                                    _slot_4 = lcl_4
+                                    lcl_4 = (_slot_4 is None)
+                                    if lcl_4:
+                                        lcl_4 = prim__tokens.offset
+                                        lcl_4 = (lcl_4, 'quote ] not match')
+                                        lcl_4 = prim__cons(lcl_4, prim__nil)
+                                        lcl_4 = lcl_4
+                                        lcl_4 = (False, lcl_4)
+                                    else:
+                                        lcl_4 = MKLRCommaList(List_a_2)
+                                        lcl_4 = List(lcl_4, List_tl_3)
+                                        _slot_local__1 = lcl_4
+                                        lcl_4 = (True, _slot_local__1)
+                                    lcl_3 = lcl_4
+                                lcl_2 = lcl_3
+                            elif (lcl_3 == 22):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -2907,7 +3420,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                         if lcl_2:
                             lcl_4 = prim__tokens.array[(prim__tokens.offset + 0)]
                             lcl_4 = lcl_4.idint
-                            if (lcl_4 == 22):
+                            if (lcl_4 == 21):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -2924,7 +3437,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                     lcl_5 = lcl_5
                                     _slot_3 = lcl_5
                                     List_tl_3 = _slot_3
-                                    lcl_5 = 23
+                                    lcl_5 = 22
                                     try:
                                         _py_local_tk = prim__tokens.array[prim__tokens.offset]
                                         if (_py_local_tk.idint is lcl_5):
@@ -2949,7 +3462,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                         lcl_5 = (True, _slot_local__1)
                                     lcl_4 = lcl_5
                                 lcl_3 = lcl_4
-                            elif (lcl_4 == 23):
+                            elif (lcl_4 == 22):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -2975,529 +3488,17 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                             lcl_2 = lcl_3
                         lcl_1 = lcl_2
                     lcl_0 = lcl_1
-                elif (lcl_1 == 24):
-                    lcl_1 = parse_CommaExps(prim__state, prim__tokens)
-                    _slot_1_check = lcl_1
-                    lcl_2 = _slot_1_check[0]
-                    lcl_1 = (lcl_2 is False)
-                    if lcl_1:
-                        lcl_1 = _slot_1_check
-                    else:
-                        lcl_1 = _slot_1_check[1]
-                        lcl_1 = lcl_1
-                        _slot_1 = lcl_1
-                        List_a_2 = _slot_1
-                        lcl_1 = prim__tokens.offset
-                        _off_2 = lcl_1
-                        lcl_1 = (len(prim__tokens.array) > (prim__tokens.offset + 0))
-                        if lcl_1:
-                            lcl_3 = prim__tokens.array[(prim__tokens.offset + 0)]
-                            lcl_3 = lcl_3.idint
-                            if (lcl_3 == 22):
-                                _py_local_i = prim__tokens.offset
-                                _py_local_t = prim__tokens.array[_py_local_i]
-                                prim__tokens.offset = (_py_local_i + 1)
-                                lcl_3 = _py_local_t
-                                _slot_2 = lcl_3
-                                lcl_3 = parse_Case(prim__state, prim__tokens)
-                                _slot_3_check = lcl_3
-                                lcl_3 = _slot_3_check[0]
-                                lcl_3 = (lcl_3 is False)
-                                if lcl_3:
-                                    lcl_3 = _slot_3_check
-                                else:
-                                    lcl_4 = _slot_3_check[1]
-                                    lcl_4 = lcl_4
-                                    _slot_3 = lcl_4
-                                    List_tl_3 = _slot_3
-                                    lcl_4 = 23
-                                    try:
-                                        _py_local_tk = prim__tokens.array[prim__tokens.offset]
-                                        if (_py_local_tk.idint is lcl_4):
-                                            prim__tokens.offset += 1
-                                        else:
-                                            _py_local_tk = None
-                                    except IndexError:
-                                        _py_local_tk = None
-                                    lcl_4 = _py_local_tk
-                                    _slot_4 = lcl_4
-                                    lcl_4 = (_slot_4 is None)
-                                    if lcl_4:
-                                        lcl_4 = prim__tokens.offset
-                                        lcl_4 = (lcl_4, 'quote ] not match')
-                                        lcl_4 = prim__cons(lcl_4, prim__nil)
-                                        lcl_4 = lcl_4
-                                        lcl_4 = (False, lcl_4)
-                                    else:
-                                        lcl_4 = MKLRCommaList(List_a_2)
-                                        lcl_4 = List(lcl_4, List_tl_3)
-                                        _slot_local__1 = lcl_4
-                                        lcl_4 = (True, _slot_local__1)
-                                    lcl_3 = lcl_4
-                                lcl_2 = lcl_3
-                            elif (lcl_3 == 23):
-                                _py_local_i = prim__tokens.offset
-                                _py_local_t = prim__tokens.array[_py_local_i]
-                                prim__tokens.offset = (_py_local_i + 1)
-                                lcl_3 = _py_local_t
-                                _slot_2 = lcl_3
-                                lcl_3 = MKLRCommaList(List_a_2)
-                                lcl_3 = List(lcl_3, none)
-                                _slot_local__1 = lcl_3
-                                lcl_3 = (True, _slot_local__1)
-                                lcl_2 = lcl_3
-                            else:
-                                lcl_3 = (_off_2, 'List lookahead failed')
-                                lcl_3 = prim__cons(lcl_3, prim__nil)
-                                lcl_3 = lcl_3
-                                lcl_3 = (False, lcl_3)
-                                lcl_2 = lcl_3
-                            lcl_1 = lcl_2
-                        else:
-                            lcl_2 = (_off_2, 'List got EOF')
-                            lcl_3 = prim__cons(lcl_2, prim__nil)
-                            lcl_2 = lcl_3
-                            lcl_2 = (False, lcl_2)
-                            lcl_1 = lcl_2
-                    lcl_0 = lcl_1
-                elif (lcl_1 == 3):
-                    lcl_1 = parse_CommaExps(prim__state, prim__tokens)
-                    _slot_1_check = lcl_1
-                    lcl_1 = _slot_1_check[0]
-                    lcl_1 = (lcl_1 is False)
-                    if lcl_1:
-                        lcl_1 = _slot_1_check
-                    else:
-                        lcl_2 = _slot_1_check[1]
-                        lcl_2 = lcl_2
-                        _slot_1 = lcl_2
-                        List_a_2 = _slot_1
-                        lcl_2 = prim__tokens.offset
-                        _off_2 = lcl_2
-                        lcl_2 = (len(prim__tokens.array) > (prim__tokens.offset + 0))
-                        if lcl_2:
-                            lcl_4 = prim__tokens.array[(prim__tokens.offset + 0)]
-                            lcl_4 = lcl_4.idint
-                            if (lcl_4 == 22):
-                                _py_local_i = prim__tokens.offset
-                                _py_local_t = prim__tokens.array[_py_local_i]
-                                prim__tokens.offset = (_py_local_i + 1)
-                                lcl_4 = _py_local_t
-                                _slot_2 = lcl_4
-                                lcl_4 = parse_Case(prim__state, prim__tokens)
-                                _slot_3_check = lcl_4
-                                lcl_4 = _slot_3_check[0]
-                                lcl_4 = (lcl_4 is False)
-                                if lcl_4:
-                                    lcl_4 = _slot_3_check
-                                else:
-                                    lcl_5 = _slot_3_check[1]
-                                    lcl_5 = lcl_5
-                                    _slot_3 = lcl_5
-                                    List_tl_3 = _slot_3
-                                    lcl_5 = 23
-                                    try:
-                                        _py_local_tk = prim__tokens.array[prim__tokens.offset]
-                                        if (_py_local_tk.idint is lcl_5):
-                                            prim__tokens.offset += 1
-                                        else:
-                                            _py_local_tk = None
-                                    except IndexError:
-                                        _py_local_tk = None
-                                    lcl_5 = _py_local_tk
-                                    _slot_4 = lcl_5
-                                    lcl_5 = (_slot_4 is None)
-                                    if lcl_5:
-                                        lcl_5 = prim__tokens.offset
-                                        lcl_5 = (lcl_5, 'quote ] not match')
-                                        lcl_5 = prim__cons(lcl_5, prim__nil)
-                                        lcl_5 = lcl_5
-                                        lcl_5 = (False, lcl_5)
-                                    else:
-                                        lcl_5 = MKLRCommaList(List_a_2)
-                                        lcl_5 = List(lcl_5, List_tl_3)
-                                        _slot_local__1 = lcl_5
-                                        lcl_5 = (True, _slot_local__1)
-                                    lcl_4 = lcl_5
-                                lcl_3 = lcl_4
-                            elif (lcl_4 == 23):
-                                _py_local_i = prim__tokens.offset
-                                _py_local_t = prim__tokens.array[_py_local_i]
-                                prim__tokens.offset = (_py_local_i + 1)
-                                lcl_4 = _py_local_t
-                                _slot_2 = lcl_4
-                                lcl_4 = MKLRCommaList(List_a_2)
-                                lcl_4 = List(lcl_4, none)
-                                _slot_local__1 = lcl_4
-                                lcl_4 = (True, _slot_local__1)
-                                lcl_3 = lcl_4
-                            else:
-                                lcl_4 = (_off_2, 'List lookahead failed')
-                                lcl_4 = prim__cons(lcl_4, prim__nil)
-                                lcl_4 = lcl_4
-                                lcl_4 = (False, lcl_4)
-                                lcl_3 = lcl_4
-                            lcl_2 = lcl_3
-                        else:
-                            lcl_3 = (_off_2, 'List got EOF')
-                            lcl_4 = prim__cons(lcl_3, prim__nil)
-                            lcl_3 = lcl_4
-                            lcl_3 = (False, lcl_3)
-                            lcl_2 = lcl_3
-                        lcl_1 = lcl_2
-                    lcl_0 = lcl_1
-                elif (lcl_1 == 10):
-                    lcl_1 = parse_CommaExps(prim__state, prim__tokens)
-                    _slot_1_check = lcl_1
-                    lcl_2 = _slot_1_check[0]
-                    lcl_1 = (lcl_2 is False)
-                    if lcl_1:
-                        lcl_1 = _slot_1_check
-                    else:
-                        lcl_1 = _slot_1_check[1]
-                        lcl_1 = lcl_1
-                        _slot_1 = lcl_1
-                        List_a_2 = _slot_1
-                        lcl_1 = prim__tokens.offset
-                        _off_2 = lcl_1
-                        lcl_1 = (len(prim__tokens.array) > (prim__tokens.offset + 0))
-                        if lcl_1:
-                            lcl_3 = prim__tokens.array[(prim__tokens.offset + 0)]
-                            lcl_3 = lcl_3.idint
-                            if (lcl_3 == 22):
-                                _py_local_i = prim__tokens.offset
-                                _py_local_t = prim__tokens.array[_py_local_i]
-                                prim__tokens.offset = (_py_local_i + 1)
-                                lcl_3 = _py_local_t
-                                _slot_2 = lcl_3
-                                lcl_3 = parse_Case(prim__state, prim__tokens)
-                                _slot_3_check = lcl_3
-                                lcl_3 = _slot_3_check[0]
-                                lcl_3 = (lcl_3 is False)
-                                if lcl_3:
-                                    lcl_3 = _slot_3_check
-                                else:
-                                    lcl_4 = _slot_3_check[1]
-                                    lcl_4 = lcl_4
-                                    _slot_3 = lcl_4
-                                    List_tl_3 = _slot_3
-                                    lcl_4 = 23
-                                    try:
-                                        _py_local_tk = prim__tokens.array[prim__tokens.offset]
-                                        if (_py_local_tk.idint is lcl_4):
-                                            prim__tokens.offset += 1
-                                        else:
-                                            _py_local_tk = None
-                                    except IndexError:
-                                        _py_local_tk = None
-                                    lcl_4 = _py_local_tk
-                                    _slot_4 = lcl_4
-                                    lcl_4 = (_slot_4 is None)
-                                    if lcl_4:
-                                        lcl_4 = prim__tokens.offset
-                                        lcl_4 = (lcl_4, 'quote ] not match')
-                                        lcl_4 = prim__cons(lcl_4, prim__nil)
-                                        lcl_4 = lcl_4
-                                        lcl_4 = (False, lcl_4)
-                                    else:
-                                        lcl_4 = MKLRCommaList(List_a_2)
-                                        lcl_4 = List(lcl_4, List_tl_3)
-                                        _slot_local__1 = lcl_4
-                                        lcl_4 = (True, _slot_local__1)
-                                    lcl_3 = lcl_4
-                                lcl_2 = lcl_3
-                            elif (lcl_3 == 23):
-                                _py_local_i = prim__tokens.offset
-                                _py_local_t = prim__tokens.array[_py_local_i]
-                                prim__tokens.offset = (_py_local_i + 1)
-                                lcl_3 = _py_local_t
-                                _slot_2 = lcl_3
-                                lcl_3 = MKLRCommaList(List_a_2)
-                                lcl_3 = List(lcl_3, none)
-                                _slot_local__1 = lcl_3
-                                lcl_3 = (True, _slot_local__1)
-                                lcl_2 = lcl_3
-                            else:
-                                lcl_3 = (_off_2, 'List lookahead failed')
-                                lcl_3 = prim__cons(lcl_3, prim__nil)
-                                lcl_3 = lcl_3
-                                lcl_3 = (False, lcl_3)
-                                lcl_2 = lcl_3
-                            lcl_1 = lcl_2
-                        else:
-                            lcl_2 = (_off_2, 'List got EOF')
-                            lcl_3 = prim__cons(lcl_2, prim__nil)
-                            lcl_2 = lcl_3
-                            lcl_2 = (False, lcl_2)
-                            lcl_1 = lcl_2
-                    lcl_0 = lcl_1
-                elif (lcl_1 == 15):
-                    lcl_1 = parse_CommaExps(prim__state, prim__tokens)
-                    _slot_1_check = lcl_1
-                    lcl_1 = _slot_1_check[0]
-                    lcl_1 = (lcl_1 is False)
-                    if lcl_1:
-                        lcl_1 = _slot_1_check
-                    else:
-                        lcl_2 = _slot_1_check[1]
-                        lcl_2 = lcl_2
-                        _slot_1 = lcl_2
-                        List_a_2 = _slot_1
-                        lcl_2 = prim__tokens.offset
-                        _off_2 = lcl_2
-                        lcl_2 = (len(prim__tokens.array) > (prim__tokens.offset + 0))
-                        if lcl_2:
-                            lcl_4 = prim__tokens.array[(prim__tokens.offset + 0)]
-                            lcl_4 = lcl_4.idint
-                            if (lcl_4 == 22):
-                                _py_local_i = prim__tokens.offset
-                                _py_local_t = prim__tokens.array[_py_local_i]
-                                prim__tokens.offset = (_py_local_i + 1)
-                                lcl_4 = _py_local_t
-                                _slot_2 = lcl_4
-                                lcl_4 = parse_Case(prim__state, prim__tokens)
-                                _slot_3_check = lcl_4
-                                lcl_4 = _slot_3_check[0]
-                                lcl_4 = (lcl_4 is False)
-                                if lcl_4:
-                                    lcl_4 = _slot_3_check
-                                else:
-                                    lcl_5 = _slot_3_check[1]
-                                    lcl_5 = lcl_5
-                                    _slot_3 = lcl_5
-                                    List_tl_3 = _slot_3
-                                    lcl_5 = 23
-                                    try:
-                                        _py_local_tk = prim__tokens.array[prim__tokens.offset]
-                                        if (_py_local_tk.idint is lcl_5):
-                                            prim__tokens.offset += 1
-                                        else:
-                                            _py_local_tk = None
-                                    except IndexError:
-                                        _py_local_tk = None
-                                    lcl_5 = _py_local_tk
-                                    _slot_4 = lcl_5
-                                    lcl_5 = (_slot_4 is None)
-                                    if lcl_5:
-                                        lcl_5 = prim__tokens.offset
-                                        lcl_5 = (lcl_5, 'quote ] not match')
-                                        lcl_5 = prim__cons(lcl_5, prim__nil)
-                                        lcl_5 = lcl_5
-                                        lcl_5 = (False, lcl_5)
-                                    else:
-                                        lcl_5 = MKLRCommaList(List_a_2)
-                                        lcl_5 = List(lcl_5, List_tl_3)
-                                        _slot_local__1 = lcl_5
-                                        lcl_5 = (True, _slot_local__1)
-                                    lcl_4 = lcl_5
-                                lcl_3 = lcl_4
-                            elif (lcl_4 == 23):
-                                _py_local_i = prim__tokens.offset
-                                _py_local_t = prim__tokens.array[_py_local_i]
-                                prim__tokens.offset = (_py_local_i + 1)
-                                lcl_4 = _py_local_t
-                                _slot_2 = lcl_4
-                                lcl_4 = MKLRCommaList(List_a_2)
-                                lcl_4 = List(lcl_4, none)
-                                _slot_local__1 = lcl_4
-                                lcl_4 = (True, _slot_local__1)
-                                lcl_3 = lcl_4
-                            else:
-                                lcl_4 = (_off_2, 'List lookahead failed')
-                                lcl_4 = prim__cons(lcl_4, prim__nil)
-                                lcl_4 = lcl_4
-                                lcl_4 = (False, lcl_4)
-                                lcl_3 = lcl_4
-                            lcl_2 = lcl_3
-                        else:
-                            lcl_3 = (_off_2, 'List got EOF')
-                            lcl_4 = prim__cons(lcl_3, prim__nil)
-                            lcl_3 = lcl_4
-                            lcl_3 = (False, lcl_3)
-                            lcl_2 = lcl_3
-                        lcl_1 = lcl_2
-                    lcl_0 = lcl_1
-                elif (lcl_1 == 20):
-                    lcl_1 = parse_CommaExps(prim__state, prim__tokens)
-                    _slot_1_check = lcl_1
-                    lcl_2 = _slot_1_check[0]
-                    lcl_1 = (lcl_2 is False)
-                    if lcl_1:
-                        lcl_1 = _slot_1_check
-                    else:
-                        lcl_1 = _slot_1_check[1]
-                        lcl_1 = lcl_1
-                        _slot_1 = lcl_1
-                        List_a_2 = _slot_1
-                        lcl_1 = prim__tokens.offset
-                        _off_2 = lcl_1
-                        lcl_1 = (len(prim__tokens.array) > (prim__tokens.offset + 0))
-                        if lcl_1:
-                            lcl_3 = prim__tokens.array[(prim__tokens.offset + 0)]
-                            lcl_3 = lcl_3.idint
-                            if (lcl_3 == 22):
-                                _py_local_i = prim__tokens.offset
-                                _py_local_t = prim__tokens.array[_py_local_i]
-                                prim__tokens.offset = (_py_local_i + 1)
-                                lcl_3 = _py_local_t
-                                _slot_2 = lcl_3
-                                lcl_3 = parse_Case(prim__state, prim__tokens)
-                                _slot_3_check = lcl_3
-                                lcl_3 = _slot_3_check[0]
-                                lcl_3 = (lcl_3 is False)
-                                if lcl_3:
-                                    lcl_3 = _slot_3_check
-                                else:
-                                    lcl_4 = _slot_3_check[1]
-                                    lcl_4 = lcl_4
-                                    _slot_3 = lcl_4
-                                    List_tl_3 = _slot_3
-                                    lcl_4 = 23
-                                    try:
-                                        _py_local_tk = prim__tokens.array[prim__tokens.offset]
-                                        if (_py_local_tk.idint is lcl_4):
-                                            prim__tokens.offset += 1
-                                        else:
-                                            _py_local_tk = None
-                                    except IndexError:
-                                        _py_local_tk = None
-                                    lcl_4 = _py_local_tk
-                                    _slot_4 = lcl_4
-                                    lcl_4 = (_slot_4 is None)
-                                    if lcl_4:
-                                        lcl_4 = prim__tokens.offset
-                                        lcl_4 = (lcl_4, 'quote ] not match')
-                                        lcl_4 = prim__cons(lcl_4, prim__nil)
-                                        lcl_4 = lcl_4
-                                        lcl_4 = (False, lcl_4)
-                                    else:
-                                        lcl_4 = MKLRCommaList(List_a_2)
-                                        lcl_4 = List(lcl_4, List_tl_3)
-                                        _slot_local__1 = lcl_4
-                                        lcl_4 = (True, _slot_local__1)
-                                    lcl_3 = lcl_4
-                                lcl_2 = lcl_3
-                            elif (lcl_3 == 23):
-                                _py_local_i = prim__tokens.offset
-                                _py_local_t = prim__tokens.array[_py_local_i]
-                                prim__tokens.offset = (_py_local_i + 1)
-                                lcl_3 = _py_local_t
-                                _slot_2 = lcl_3
-                                lcl_3 = MKLRCommaList(List_a_2)
-                                lcl_3 = List(lcl_3, none)
-                                _slot_local__1 = lcl_3
-                                lcl_3 = (True, _slot_local__1)
-                                lcl_2 = lcl_3
-                            else:
-                                lcl_3 = (_off_2, 'List lookahead failed')
-                                lcl_3 = prim__cons(lcl_3, prim__nil)
-                                lcl_3 = lcl_3
-                                lcl_3 = (False, lcl_3)
-                                lcl_2 = lcl_3
-                            lcl_1 = lcl_2
-                        else:
-                            lcl_2 = (_off_2, 'List got EOF')
-                            lcl_3 = prim__cons(lcl_2, prim__nil)
-                            lcl_2 = lcl_3
-                            lcl_2 = (False, lcl_2)
-                            lcl_1 = lcl_2
-                    lcl_0 = lcl_1
-                elif (lcl_1 == 23):
+                elif (lcl_1 == 22):
                     _py_local_i = prim__tokens.offset
                     _py_local_t = prim__tokens.array[_py_local_i]
                     prim__tokens.offset = (_py_local_i + 1)
                     lcl_1 = _py_local_t
                     _slot_1 = lcl_1
-                    lcl_1 = List(Tuple0, none)
-                    _slot_local__1 = lcl_1
+                    lcl_2 = List(Tuple0, none)
+                    _slot_local__1 = lcl_2
                     lcl_1 = (True, _slot_local__1)
                     lcl_0 = lcl_1
-                elif (lcl_1 == 21):
-                    lcl_1 = parse_CommaExps(prim__state, prim__tokens)
-                    _slot_1_check = lcl_1
-                    lcl_1 = _slot_1_check[0]
-                    lcl_1 = (lcl_1 is False)
-                    if lcl_1:
-                        lcl_1 = _slot_1_check
-                    else:
-                        lcl_1 = _slot_1_check[1]
-                        lcl_1 = lcl_1
-                        _slot_1 = lcl_1
-                        List_a_2 = _slot_1
-                        lcl_1 = prim__tokens.offset
-                        _off_2 = lcl_1
-                        lcl_1 = (len(prim__tokens.array) > (prim__tokens.offset + 0))
-                        if lcl_1:
-                            lcl_3 = prim__tokens.array[(prim__tokens.offset + 0)]
-                            lcl_3 = lcl_3.idint
-                            if (lcl_3 == 22):
-                                _py_local_i = prim__tokens.offset
-                                _py_local_t = prim__tokens.array[_py_local_i]
-                                prim__tokens.offset = (_py_local_i + 1)
-                                lcl_3 = _py_local_t
-                                _slot_2 = lcl_3
-                                lcl_3 = parse_Case(prim__state, prim__tokens)
-                                _slot_3_check = lcl_3
-                                lcl_3 = _slot_3_check[0]
-                                lcl_3 = (lcl_3 is False)
-                                if lcl_3:
-                                    lcl_3 = _slot_3_check
-                                else:
-                                    lcl_4 = _slot_3_check[1]
-                                    lcl_4 = lcl_4
-                                    _slot_3 = lcl_4
-                                    List_tl_3 = _slot_3
-                                    lcl_4 = 23
-                                    try:
-                                        _py_local_tk = prim__tokens.array[prim__tokens.offset]
-                                        if (_py_local_tk.idint is lcl_4):
-                                            prim__tokens.offset += 1
-                                        else:
-                                            _py_local_tk = None
-                                    except IndexError:
-                                        _py_local_tk = None
-                                    lcl_4 = _py_local_tk
-                                    _slot_4 = lcl_4
-                                    lcl_4 = (_slot_4 is None)
-                                    if lcl_4:
-                                        lcl_4 = prim__tokens.offset
-                                        lcl_4 = (lcl_4, 'quote ] not match')
-                                        lcl_4 = prim__cons(lcl_4, prim__nil)
-                                        lcl_4 = lcl_4
-                                        lcl_4 = (False, lcl_4)
-                                    else:
-                                        lcl_4 = MKLRCommaList(List_a_2)
-                                        lcl_4 = List(lcl_4, List_tl_3)
-                                        _slot_local__1 = lcl_4
-                                        lcl_4 = (True, _slot_local__1)
-                                    lcl_3 = lcl_4
-                                lcl_2 = lcl_3
-                            elif (lcl_3 == 23):
-                                _py_local_i = prim__tokens.offset
-                                _py_local_t = prim__tokens.array[_py_local_i]
-                                prim__tokens.offset = (_py_local_i + 1)
-                                lcl_3 = _py_local_t
-                                _slot_2 = lcl_3
-                                lcl_3 = MKLRCommaList(List_a_2)
-                                lcl_3 = List(lcl_3, none)
-                                _slot_local__1 = lcl_3
-                                lcl_3 = (True, _slot_local__1)
-                                lcl_2 = lcl_3
-                            else:
-                                lcl_3 = (_off_2, 'List lookahead failed')
-                                lcl_3 = prim__cons(lcl_3, prim__nil)
-                                lcl_3 = lcl_3
-                                lcl_3 = (False, lcl_3)
-                                lcl_2 = lcl_3
-                            lcl_1 = lcl_2
-                        else:
-                            lcl_2 = (_off_2, 'List got EOF')
-                            lcl_3 = prim__cons(lcl_2, prim__nil)
-                            lcl_2 = lcl_3
-                            lcl_2 = (False, lcl_2)
-                            lcl_1 = lcl_2
-                    lcl_0 = lcl_1
-                elif (lcl_1 == 18):
+                elif (lcl_1 == 20):
                     lcl_1 = parse_CommaExps(prim__state, prim__tokens)
                     _slot_1_check = lcl_1
                     lcl_1 = _slot_1_check[0]
@@ -3515,7 +3516,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                         if lcl_2:
                             lcl_4 = prim__tokens.array[(prim__tokens.offset + 0)]
                             lcl_4 = lcl_4.idint
-                            if (lcl_4 == 22):
+                            if (lcl_4 == 21):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -3532,7 +3533,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                     lcl_5 = lcl_5
                                     _slot_3 = lcl_5
                                     List_tl_3 = _slot_3
-                                    lcl_5 = 23
+                                    lcl_5 = 22
                                     try:
                                         _py_local_tk = prim__tokens.array[prim__tokens.offset]
                                         if (_py_local_tk.idint is lcl_5):
@@ -3557,7 +3558,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                         lcl_5 = (True, _slot_local__1)
                                     lcl_4 = lcl_5
                                 lcl_3 = lcl_4
-                            elif (lcl_4 == 23):
+                            elif (lcl_4 == 22):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -3601,7 +3602,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                         if lcl_1:
                             lcl_3 = prim__tokens.array[(prim__tokens.offset + 0)]
                             lcl_3 = lcl_3.idint
-                            if (lcl_3 == 22):
+                            if (lcl_3 == 21):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -3618,7 +3619,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                     lcl_4 = lcl_4
                                     _slot_3 = lcl_4
                                     List_tl_3 = _slot_3
-                                    lcl_4 = 23
+                                    lcl_4 = 22
                                     try:
                                         _py_local_tk = prim__tokens.array[prim__tokens.offset]
                                         if (_py_local_tk.idint is lcl_4):
@@ -3643,7 +3644,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                         lcl_4 = (True, _slot_local__1)
                                     lcl_3 = lcl_4
                                 lcl_2 = lcl_3
-                            elif (lcl_3 == 23):
+                            elif (lcl_3 == 22):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -3668,7 +3669,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                             lcl_2 = (False, lcl_2)
                             lcl_1 = lcl_2
                     lcl_0 = lcl_1
-                elif (lcl_1 == 29):
+                elif (lcl_1 == 28):
                     lcl_1 = parse_CommaExps(prim__state, prim__tokens)
                     _slot_1_check = lcl_1
                     lcl_1 = _slot_1_check[0]
@@ -3686,7 +3687,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                         if lcl_2:
                             lcl_4 = prim__tokens.array[(prim__tokens.offset + 0)]
                             lcl_4 = lcl_4.idint
-                            if (lcl_4 == 22):
+                            if (lcl_4 == 21):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -3703,7 +3704,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                     lcl_5 = lcl_5
                                     _slot_3 = lcl_5
                                     List_tl_3 = _slot_3
-                                    lcl_5 = 23
+                                    lcl_5 = 22
                                     try:
                                         _py_local_tk = prim__tokens.array[prim__tokens.offset]
                                         if (_py_local_tk.idint is lcl_5):
@@ -3728,7 +3729,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                         lcl_5 = (True, _slot_local__1)
                                     lcl_4 = lcl_5
                                 lcl_3 = lcl_4
-                            elif (lcl_4 == 23):
+                            elif (lcl_4 == 22):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -3772,7 +3773,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                         if lcl_1:
                             lcl_3 = prim__tokens.array[(prim__tokens.offset + 0)]
                             lcl_3 = lcl_3.idint
-                            if (lcl_3 == 22):
+                            if (lcl_3 == 21):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -3789,7 +3790,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                     lcl_4 = lcl_4
                                     _slot_3 = lcl_4
                                     List_tl_3 = _slot_3
-                                    lcl_4 = 23
+                                    lcl_4 = 22
                                     try:
                                         _py_local_tk = prim__tokens.array[prim__tokens.offset]
                                         if (_py_local_tk.idint is lcl_4):
@@ -3814,7 +3815,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                         lcl_4 = (True, _slot_local__1)
                                     lcl_3 = lcl_4
                                 lcl_2 = lcl_3
-                            elif (lcl_3 == 23):
+                            elif (lcl_3 == 22):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -3839,7 +3840,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                             lcl_2 = (False, lcl_2)
                             lcl_1 = lcl_2
                     lcl_0 = lcl_1
-                elif (lcl_1 == 32):
+                elif (lcl_1 == 31):
                     lcl_1 = parse_CommaExps(prim__state, prim__tokens)
                     _slot_1_check = lcl_1
                     lcl_1 = _slot_1_check[0]
@@ -3857,7 +3858,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                         if lcl_2:
                             lcl_4 = prim__tokens.array[(prim__tokens.offset + 0)]
                             lcl_4 = lcl_4.idint
-                            if (lcl_4 == 22):
+                            if (lcl_4 == 21):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -3874,7 +3875,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                     lcl_5 = lcl_5
                                     _slot_3 = lcl_5
                                     List_tl_3 = _slot_3
-                                    lcl_5 = 23
+                                    lcl_5 = 22
                                     try:
                                         _py_local_tk = prim__tokens.array[prim__tokens.offset]
                                         if (_py_local_tk.idint is lcl_5):
@@ -3899,7 +3900,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                         lcl_5 = (True, _slot_local__1)
                                     lcl_4 = lcl_5
                                 lcl_3 = lcl_4
-                            elif (lcl_4 == 23):
+                            elif (lcl_4 == 22):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -3939,7 +3940,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
         return lcl_0
 
     def parse_ListCase(prim__state, prim__tokens):
-        lcl_0 = 21
+        lcl_0 = 20
         try:
             _py_local_tk = prim__tokens.array[prim__tokens.offset]
             if (_py_local_tk.idint is lcl_0):
@@ -3964,7 +3965,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
             if lcl_0:
                 lcl_1 = prim__tokens.array[(prim__tokens.offset + 0)]
                 lcl_1 = lcl_1.idint
-                if (lcl_1 == 31):
+                if (lcl_1 == 32):
                     lcl_1 = parse_CommaCases(prim__state, prim__tokens)
                     _slot_1_check = lcl_1
                     lcl_1 = _slot_1_check[0]
@@ -3982,7 +3983,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                         if lcl_1:
                             lcl_3 = prim__tokens.array[(prim__tokens.offset + 0)]
                             lcl_3 = lcl_3.idint
-                            if (lcl_3 == 22):
+                            if (lcl_3 == 21):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -3999,7 +4000,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                     lcl_4 = lcl_4
                                     _slot_3 = lcl_4
                                     ListCase_tl_3 = _slot_3
-                                    lcl_4 = 23
+                                    lcl_4 = 22
                                     try:
                                         _py_local_tk = prim__tokens.array[prim__tokens.offset]
                                         if (_py_local_tk.idint is lcl_4):
@@ -4024,7 +4025,178 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                         lcl_4 = (True, _slot_local__1)
                                     lcl_3 = lcl_4
                                 lcl_2 = lcl_3
-                            elif (lcl_3 == 23):
+                            elif (lcl_3 == 22):
+                                _py_local_i = prim__tokens.offset
+                                _py_local_t = prim__tokens.array[_py_local_i]
+                                prim__tokens.offset = (_py_local_i + 1)
+                                lcl_3 = _py_local_t
+                                _slot_2 = lcl_3
+                                lcl_3 = MKLRCommaList(ListCase_a_2)
+                                lcl_3 = ListCase(lcl_3, none)
+                                _slot_local__1 = lcl_3
+                                lcl_3 = (True, _slot_local__1)
+                                lcl_2 = lcl_3
+                            else:
+                                lcl_3 = (_off_2, 'ListCase lookahead failed')
+                                lcl_3 = prim__cons(lcl_3, prim__nil)
+                                lcl_3 = lcl_3
+                                lcl_3 = (False, lcl_3)
+                                lcl_2 = lcl_3
+                            lcl_1 = lcl_2
+                        else:
+                            lcl_2 = (_off_2, 'ListCase got EOF')
+                            lcl_3 = prim__cons(lcl_2, prim__nil)
+                            lcl_2 = lcl_3
+                            lcl_2 = (False, lcl_2)
+                            lcl_1 = lcl_2
+                    lcl_0 = lcl_1
+                elif (lcl_1 == 30):
+                    lcl_1 = parse_CommaCases(prim__state, prim__tokens)
+                    _slot_1_check = lcl_1
+                    lcl_1 = _slot_1_check[0]
+                    lcl_1 = (lcl_1 is False)
+                    if lcl_1:
+                        lcl_1 = _slot_1_check
+                    else:
+                        lcl_2 = _slot_1_check[1]
+                        lcl_2 = lcl_2
+                        _slot_1 = lcl_2
+                        ListCase_a_2 = _slot_1
+                        lcl_2 = prim__tokens.offset
+                        _off_2 = lcl_2
+                        lcl_2 = (len(prim__tokens.array) > (prim__tokens.offset + 0))
+                        if lcl_2:
+                            lcl_4 = prim__tokens.array[(prim__tokens.offset + 0)]
+                            lcl_4 = lcl_4.idint
+                            if (lcl_4 == 21):
+                                _py_local_i = prim__tokens.offset
+                                _py_local_t = prim__tokens.array[_py_local_i]
+                                prim__tokens.offset = (_py_local_i + 1)
+                                lcl_4 = _py_local_t
+                                _slot_2 = lcl_4
+                                lcl_4 = parse_Case(prim__state, prim__tokens)
+                                _slot_3_check = lcl_4
+                                lcl_4 = _slot_3_check[0]
+                                lcl_4 = (lcl_4 is False)
+                                if lcl_4:
+                                    lcl_4 = _slot_3_check
+                                else:
+                                    lcl_5 = _slot_3_check[1]
+                                    lcl_5 = lcl_5
+                                    _slot_3 = lcl_5
+                                    ListCase_tl_3 = _slot_3
+                                    lcl_5 = 22
+                                    try:
+                                        _py_local_tk = prim__tokens.array[prim__tokens.offset]
+                                        if (_py_local_tk.idint is lcl_5):
+                                            prim__tokens.offset += 1
+                                        else:
+                                            _py_local_tk = None
+                                    except IndexError:
+                                        _py_local_tk = None
+                                    lcl_5 = _py_local_tk
+                                    _slot_4 = lcl_5
+                                    lcl_5 = (_slot_4 is None)
+                                    if lcl_5:
+                                        lcl_5 = prim__tokens.offset
+                                        lcl_5 = (lcl_5, 'quote ] not match')
+                                        lcl_5 = prim__cons(lcl_5, prim__nil)
+                                        lcl_5 = lcl_5
+                                        lcl_5 = (False, lcl_5)
+                                    else:
+                                        lcl_5 = MKLRCommaList(ListCase_a_2)
+                                        lcl_5 = ListCase(lcl_5, ListCase_tl_3)
+                                        _slot_local__1 = lcl_5
+                                        lcl_5 = (True, _slot_local__1)
+                                    lcl_4 = lcl_5
+                                lcl_3 = lcl_4
+                            elif (lcl_4 == 22):
+                                _py_local_i = prim__tokens.offset
+                                _py_local_t = prim__tokens.array[_py_local_i]
+                                prim__tokens.offset = (_py_local_i + 1)
+                                lcl_4 = _py_local_t
+                                _slot_2 = lcl_4
+                                lcl_4 = MKLRCommaList(ListCase_a_2)
+                                lcl_4 = ListCase(lcl_4, none)
+                                _slot_local__1 = lcl_4
+                                lcl_4 = (True, _slot_local__1)
+                                lcl_3 = lcl_4
+                            else:
+                                lcl_4 = (_off_2, 'ListCase lookahead failed')
+                                lcl_4 = prim__cons(lcl_4, prim__nil)
+                                lcl_4 = lcl_4
+                                lcl_4 = (False, lcl_4)
+                                lcl_3 = lcl_4
+                            lcl_2 = lcl_3
+                        else:
+                            lcl_3 = (_off_2, 'ListCase got EOF')
+                            lcl_4 = prim__cons(lcl_3, prim__nil)
+                            lcl_3 = lcl_4
+                            lcl_3 = (False, lcl_3)
+                            lcl_2 = lcl_3
+                        lcl_1 = lcl_2
+                    lcl_0 = lcl_1
+                elif (lcl_1 == 18):
+                    lcl_1 = parse_CommaCases(prim__state, prim__tokens)
+                    _slot_1_check = lcl_1
+                    lcl_2 = _slot_1_check[0]
+                    lcl_1 = (lcl_2 is False)
+                    if lcl_1:
+                        lcl_1 = _slot_1_check
+                    else:
+                        lcl_1 = _slot_1_check[1]
+                        lcl_1 = lcl_1
+                        _slot_1 = lcl_1
+                        ListCase_a_2 = _slot_1
+                        lcl_1 = prim__tokens.offset
+                        _off_2 = lcl_1
+                        lcl_1 = (len(prim__tokens.array) > (prim__tokens.offset + 0))
+                        if lcl_1:
+                            lcl_3 = prim__tokens.array[(prim__tokens.offset + 0)]
+                            lcl_3 = lcl_3.idint
+                            if (lcl_3 == 21):
+                                _py_local_i = prim__tokens.offset
+                                _py_local_t = prim__tokens.array[_py_local_i]
+                                prim__tokens.offset = (_py_local_i + 1)
+                                lcl_3 = _py_local_t
+                                _slot_2 = lcl_3
+                                lcl_3 = parse_Case(prim__state, prim__tokens)
+                                _slot_3_check = lcl_3
+                                lcl_3 = _slot_3_check[0]
+                                lcl_3 = (lcl_3 is False)
+                                if lcl_3:
+                                    lcl_3 = _slot_3_check
+                                else:
+                                    lcl_4 = _slot_3_check[1]
+                                    lcl_4 = lcl_4
+                                    _slot_3 = lcl_4
+                                    ListCase_tl_3 = _slot_3
+                                    lcl_4 = 22
+                                    try:
+                                        _py_local_tk = prim__tokens.array[prim__tokens.offset]
+                                        if (_py_local_tk.idint is lcl_4):
+                                            prim__tokens.offset += 1
+                                        else:
+                                            _py_local_tk = None
+                                    except IndexError:
+                                        _py_local_tk = None
+                                    lcl_4 = _py_local_tk
+                                    _slot_4 = lcl_4
+                                    lcl_4 = (_slot_4 is None)
+                                    if lcl_4:
+                                        lcl_4 = prim__tokens.offset
+                                        lcl_4 = (lcl_4, 'quote ] not match')
+                                        lcl_4 = prim__cons(lcl_4, prim__nil)
+                                        lcl_4 = lcl_4
+                                        lcl_4 = (False, lcl_4)
+                                    else:
+                                        lcl_4 = MKLRCommaList(ListCase_a_2)
+                                        lcl_4 = ListCase(lcl_4, ListCase_tl_3)
+                                        _slot_local__1 = lcl_4
+                                        lcl_4 = (True, _slot_local__1)
+                                    lcl_3 = lcl_4
+                                lcl_2 = lcl_3
+                            elif (lcl_3 == 22):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -4067,7 +4239,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                         if lcl_2:
                             lcl_4 = prim__tokens.array[(prim__tokens.offset + 0)]
                             lcl_4 = lcl_4.idint
-                            if (lcl_4 == 22):
+                            if (lcl_4 == 21):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -4084,7 +4256,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                     lcl_5 = lcl_5
                                     _slot_3 = lcl_5
                                     ListCase_tl_3 = _slot_3
-                                    lcl_5 = 23
+                                    lcl_5 = 22
                                     try:
                                         _py_local_tk = prim__tokens.array[prim__tokens.offset]
                                         if (_py_local_tk.idint is lcl_5):
@@ -4109,7 +4281,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                         lcl_5 = (True, _slot_local__1)
                                     lcl_4 = lcl_5
                                 lcl_3 = lcl_4
-                            elif (lcl_4 == 23):
+                            elif (lcl_4 == 22):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -4135,187 +4307,17 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                             lcl_2 = lcl_3
                         lcl_1 = lcl_2
                     lcl_0 = lcl_1
-                elif (lcl_1 == 20):
-                    lcl_1 = parse_CommaCases(prim__state, prim__tokens)
-                    _slot_1_check = lcl_1
-                    lcl_2 = _slot_1_check[0]
-                    lcl_1 = (lcl_2 is False)
-                    if lcl_1:
-                        lcl_1 = _slot_1_check
-                    else:
-                        lcl_1 = _slot_1_check[1]
-                        lcl_1 = lcl_1
-                        _slot_1 = lcl_1
-                        ListCase_a_2 = _slot_1
-                        lcl_1 = prim__tokens.offset
-                        _off_2 = lcl_1
-                        lcl_1 = (len(prim__tokens.array) > (prim__tokens.offset + 0))
-                        if lcl_1:
-                            lcl_3 = prim__tokens.array[(prim__tokens.offset + 0)]
-                            lcl_3 = lcl_3.idint
-                            if (lcl_3 == 22):
-                                _py_local_i = prim__tokens.offset
-                                _py_local_t = prim__tokens.array[_py_local_i]
-                                prim__tokens.offset = (_py_local_i + 1)
-                                lcl_3 = _py_local_t
-                                _slot_2 = lcl_3
-                                lcl_3 = parse_Case(prim__state, prim__tokens)
-                                _slot_3_check = lcl_3
-                                lcl_3 = _slot_3_check[0]
-                                lcl_3 = (lcl_3 is False)
-                                if lcl_3:
-                                    lcl_3 = _slot_3_check
-                                else:
-                                    lcl_4 = _slot_3_check[1]
-                                    lcl_4 = lcl_4
-                                    _slot_3 = lcl_4
-                                    ListCase_tl_3 = _slot_3
-                                    lcl_4 = 23
-                                    try:
-                                        _py_local_tk = prim__tokens.array[prim__tokens.offset]
-                                        if (_py_local_tk.idint is lcl_4):
-                                            prim__tokens.offset += 1
-                                        else:
-                                            _py_local_tk = None
-                                    except IndexError:
-                                        _py_local_tk = None
-                                    lcl_4 = _py_local_tk
-                                    _slot_4 = lcl_4
-                                    lcl_4 = (_slot_4 is None)
-                                    if lcl_4:
-                                        lcl_4 = prim__tokens.offset
-                                        lcl_4 = (lcl_4, 'quote ] not match')
-                                        lcl_4 = prim__cons(lcl_4, prim__nil)
-                                        lcl_4 = lcl_4
-                                        lcl_4 = (False, lcl_4)
-                                    else:
-                                        lcl_4 = MKLRCommaList(ListCase_a_2)
-                                        lcl_4 = ListCase(lcl_4, ListCase_tl_3)
-                                        _slot_local__1 = lcl_4
-                                        lcl_4 = (True, _slot_local__1)
-                                    lcl_3 = lcl_4
-                                lcl_2 = lcl_3
-                            elif (lcl_3 == 23):
-                                _py_local_i = prim__tokens.offset
-                                _py_local_t = prim__tokens.array[_py_local_i]
-                                prim__tokens.offset = (_py_local_i + 1)
-                                lcl_3 = _py_local_t
-                                _slot_2 = lcl_3
-                                lcl_3 = MKLRCommaList(ListCase_a_2)
-                                lcl_3 = ListCase(lcl_3, none)
-                                _slot_local__1 = lcl_3
-                                lcl_3 = (True, _slot_local__1)
-                                lcl_2 = lcl_3
-                            else:
-                                lcl_3 = (_off_2, 'ListCase lookahead failed')
-                                lcl_3 = prim__cons(lcl_3, prim__nil)
-                                lcl_3 = lcl_3
-                                lcl_3 = (False, lcl_3)
-                                lcl_2 = lcl_3
-                            lcl_1 = lcl_2
-                        else:
-                            lcl_2 = (_off_2, 'ListCase got EOF')
-                            lcl_3 = prim__cons(lcl_2, prim__nil)
-                            lcl_2 = lcl_3
-                            lcl_2 = (False, lcl_2)
-                            lcl_1 = lcl_2
-                    lcl_0 = lcl_1
-                elif (lcl_1 == 23):
+                elif (lcl_1 == 22):
                     _py_local_i = prim__tokens.offset
                     _py_local_t = prim__tokens.array[_py_local_i]
                     prim__tokens.offset = (_py_local_i + 1)
                     lcl_1 = _py_local_t
                     _slot_1 = lcl_1
-                    lcl_1 = ListCase(Tuple0, none)
-                    _slot_local__1 = lcl_1
+                    lcl_2 = ListCase(Tuple0, none)
+                    _slot_local__1 = lcl_2
                     lcl_1 = (True, _slot_local__1)
                     lcl_0 = lcl_1
-                elif (lcl_1 == 21):
-                    lcl_1 = parse_CommaCases(prim__state, prim__tokens)
-                    _slot_1_check = lcl_1
-                    lcl_1 = _slot_1_check[0]
-                    lcl_1 = (lcl_1 is False)
-                    if lcl_1:
-                        lcl_1 = _slot_1_check
-                    else:
-                        lcl_1 = _slot_1_check[1]
-                        lcl_1 = lcl_1
-                        _slot_1 = lcl_1
-                        ListCase_a_2 = _slot_1
-                        lcl_1 = prim__tokens.offset
-                        _off_2 = lcl_1
-                        lcl_1 = (len(prim__tokens.array) > (prim__tokens.offset + 0))
-                        if lcl_1:
-                            lcl_3 = prim__tokens.array[(prim__tokens.offset + 0)]
-                            lcl_3 = lcl_3.idint
-                            if (lcl_3 == 22):
-                                _py_local_i = prim__tokens.offset
-                                _py_local_t = prim__tokens.array[_py_local_i]
-                                prim__tokens.offset = (_py_local_i + 1)
-                                lcl_3 = _py_local_t
-                                _slot_2 = lcl_3
-                                lcl_3 = parse_Case(prim__state, prim__tokens)
-                                _slot_3_check = lcl_3
-                                lcl_3 = _slot_3_check[0]
-                                lcl_3 = (lcl_3 is False)
-                                if lcl_3:
-                                    lcl_3 = _slot_3_check
-                                else:
-                                    lcl_4 = _slot_3_check[1]
-                                    lcl_4 = lcl_4
-                                    _slot_3 = lcl_4
-                                    ListCase_tl_3 = _slot_3
-                                    lcl_4 = 23
-                                    try:
-                                        _py_local_tk = prim__tokens.array[prim__tokens.offset]
-                                        if (_py_local_tk.idint is lcl_4):
-                                            prim__tokens.offset += 1
-                                        else:
-                                            _py_local_tk = None
-                                    except IndexError:
-                                        _py_local_tk = None
-                                    lcl_4 = _py_local_tk
-                                    _slot_4 = lcl_4
-                                    lcl_4 = (_slot_4 is None)
-                                    if lcl_4:
-                                        lcl_4 = prim__tokens.offset
-                                        lcl_4 = (lcl_4, 'quote ] not match')
-                                        lcl_4 = prim__cons(lcl_4, prim__nil)
-                                        lcl_4 = lcl_4
-                                        lcl_4 = (False, lcl_4)
-                                    else:
-                                        lcl_4 = MKLRCommaList(ListCase_a_2)
-                                        lcl_4 = ListCase(lcl_4, ListCase_tl_3)
-                                        _slot_local__1 = lcl_4
-                                        lcl_4 = (True, _slot_local__1)
-                                    lcl_3 = lcl_4
-                                lcl_2 = lcl_3
-                            elif (lcl_3 == 23):
-                                _py_local_i = prim__tokens.offset
-                                _py_local_t = prim__tokens.array[_py_local_i]
-                                prim__tokens.offset = (_py_local_i + 1)
-                                lcl_3 = _py_local_t
-                                _slot_2 = lcl_3
-                                lcl_3 = MKLRCommaList(ListCase_a_2)
-                                lcl_3 = ListCase(lcl_3, none)
-                                _slot_local__1 = lcl_3
-                                lcl_3 = (True, _slot_local__1)
-                                lcl_2 = lcl_3
-                            else:
-                                lcl_3 = (_off_2, 'ListCase lookahead failed')
-                                lcl_3 = prim__cons(lcl_3, prim__nil)
-                                lcl_3 = lcl_3
-                                lcl_3 = (False, lcl_3)
-                                lcl_2 = lcl_3
-                            lcl_1 = lcl_2
-                        else:
-                            lcl_2 = (_off_2, 'ListCase got EOF')
-                            lcl_3 = prim__cons(lcl_2, prim__nil)
-                            lcl_2 = lcl_3
-                            lcl_2 = (False, lcl_2)
-                            lcl_1 = lcl_2
-                    lcl_0 = lcl_1
-                elif (lcl_1 == 18):
+                elif (lcl_1 == 20):
                     lcl_1 = parse_CommaCases(prim__state, prim__tokens)
                     _slot_1_check = lcl_1
                     lcl_1 = _slot_1_check[0]
@@ -4333,7 +4335,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                         if lcl_2:
                             lcl_4 = prim__tokens.array[(prim__tokens.offset + 0)]
                             lcl_4 = lcl_4.idint
-                            if (lcl_4 == 22):
+                            if (lcl_4 == 21):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -4350,7 +4352,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                     lcl_5 = lcl_5
                                     _slot_3 = lcl_5
                                     ListCase_tl_3 = _slot_3
-                                    lcl_5 = 23
+                                    lcl_5 = 22
                                     try:
                                         _py_local_tk = prim__tokens.array[prim__tokens.offset]
                                         if (_py_local_tk.idint is lcl_5):
@@ -4375,7 +4377,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                         lcl_5 = (True, _slot_local__1)
                                     lcl_4 = lcl_5
                                 lcl_3 = lcl_4
-                            elif (lcl_4 == 23):
+                            elif (lcl_4 == 22):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -4419,7 +4421,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                         if lcl_1:
                             lcl_3 = prim__tokens.array[(prim__tokens.offset + 0)]
                             lcl_3 = lcl_3.idint
-                            if (lcl_3 == 22):
+                            if (lcl_3 == 21):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -4436,7 +4438,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                     lcl_4 = lcl_4
                                     _slot_3 = lcl_4
                                     ListCase_tl_3 = _slot_3
-                                    lcl_4 = 23
+                                    lcl_4 = 22
                                     try:
                                         _py_local_tk = prim__tokens.array[prim__tokens.offset]
                                         if (_py_local_tk.idint is lcl_4):
@@ -4461,7 +4463,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                         lcl_4 = (True, _slot_local__1)
                                     lcl_3 = lcl_4
                                 lcl_2 = lcl_3
-                            elif (lcl_3 == 23):
+                            elif (lcl_3 == 22):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -4486,7 +4488,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                             lcl_2 = (False, lcl_2)
                             lcl_1 = lcl_2
                     lcl_0 = lcl_1
-                elif (lcl_1 == 29):
+                elif (lcl_1 == 28):
                     lcl_1 = parse_CommaCases(prim__state, prim__tokens)
                     _slot_1_check = lcl_1
                     lcl_1 = _slot_1_check[0]
@@ -4504,7 +4506,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                         if lcl_2:
                             lcl_4 = prim__tokens.array[(prim__tokens.offset + 0)]
                             lcl_4 = lcl_4.idint
-                            if (lcl_4 == 22):
+                            if (lcl_4 == 21):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -4521,7 +4523,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                     lcl_5 = lcl_5
                                     _slot_3 = lcl_5
                                     ListCase_tl_3 = _slot_3
-                                    lcl_5 = 23
+                                    lcl_5 = 22
                                     try:
                                         _py_local_tk = prim__tokens.array[prim__tokens.offset]
                                         if (_py_local_tk.idint is lcl_5):
@@ -4546,7 +4548,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                         lcl_5 = (True, _slot_local__1)
                                     lcl_4 = lcl_5
                                 lcl_3 = lcl_4
-                            elif (lcl_4 == 23):
+                            elif (lcl_4 == 22):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -4590,7 +4592,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                         if lcl_1:
                             lcl_3 = prim__tokens.array[(prim__tokens.offset + 0)]
                             lcl_3 = lcl_3.idint
-                            if (lcl_3 == 22):
+                            if (lcl_3 == 21):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -4607,7 +4609,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                     lcl_4 = lcl_4
                                     _slot_3 = lcl_4
                                     ListCase_tl_3 = _slot_3
-                                    lcl_4 = 23
+                                    lcl_4 = 22
                                     try:
                                         _py_local_tk = prim__tokens.array[prim__tokens.offset]
                                         if (_py_local_tk.idint is lcl_4):
@@ -4632,7 +4634,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                         lcl_4 = (True, _slot_local__1)
                                     lcl_3 = lcl_4
                                 lcl_2 = lcl_3
-                            elif (lcl_3 == 23):
+                            elif (lcl_3 == 22):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -4657,7 +4659,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                             lcl_2 = (False, lcl_2)
                             lcl_1 = lcl_2
                     lcl_0 = lcl_1
-                elif (lcl_1 == 32):
+                elif (lcl_1 == 31):
                     lcl_1 = parse_CommaCases(prim__state, prim__tokens)
                     _slot_1_check = lcl_1
                     lcl_1 = _slot_1_check[0]
@@ -4675,7 +4677,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                         if lcl_2:
                             lcl_4 = prim__tokens.array[(prim__tokens.offset + 0)]
                             lcl_4 = lcl_4.idint
-                            if (lcl_4 == 22):
+                            if (lcl_4 == 21):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -4692,7 +4694,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                     lcl_5 = lcl_5
                                     _slot_3 = lcl_5
                                     ListCase_tl_3 = _slot_3
-                                    lcl_5 = 23
+                                    lcl_5 = 22
                                     try:
                                         _py_local_tk = prim__tokens.array[prim__tokens.offset]
                                         if (_py_local_tk.idint is lcl_5):
@@ -4717,7 +4719,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                                         lcl_5 = (True, _slot_local__1)
                                     lcl_4 = lcl_5
                                 lcl_3 = lcl_4
-                            elif (lcl_4 == 23):
+                            elif (lcl_4 == 22):
                                 _py_local_i = prim__tokens.offset
                                 _py_local_t = prim__tokens.array[_py_local_i]
                                 prim__tokens.offset = (_py_local_i + 1)
@@ -4763,11 +4765,42 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
         if lcl_0:
             lcl_2 = prim__tokens.array[(prim__tokens.offset + 0)]
             lcl_2 = lcl_2.idint
-            if (lcl_2 == 31):
+            if (lcl_2 == 32):
+                lcl_2 = parse_SymExpr(prim__state, prim__tokens)
+                _slot_0_check = lcl_2
+                lcl_2 = _slot_0_check[0]
+                lcl_2 = (lcl_2 is False)
+                if lcl_2:
+                    lcl_2 = _slot_0_check
+                else:
+                    lcl_2 = _slot_0_check[1]
+                    lcl_2 = lcl_2
+                    _slot_0 = lcl_2
+                    Lit_a_1 = _slot_0
+                    _slot_local__1 = Lit_a_1
+                    lcl_2 = (True, _slot_local__1)
+                lcl_1 = lcl_2
+            elif (lcl_2 == 30):
                 lcl_2 = parse_StrExpr(prim__state, prim__tokens)
                 _slot_0_check = lcl_2
                 lcl_2 = _slot_0_check[0]
                 lcl_2 = (lcl_2 is False)
+                if lcl_2:
+                    lcl_2 = _slot_0_check
+                else:
+                    lcl_3 = _slot_0_check[1]
+                    lcl_3 = lcl_3
+                    _slot_0 = lcl_3
+                    Lit_a_1 = _slot_0
+                    _slot_local__1 = Lit_a_1
+                    lcl_3 = (True, _slot_local__1)
+                    lcl_2 = lcl_3
+                lcl_1 = lcl_2
+            elif (lcl_2 == 18):
+                lcl_2 = parse_BoolExpr(prim__state, prim__tokens)
+                _slot_0_check = lcl_2
+                lcl_3 = _slot_0_check[0]
+                lcl_2 = (lcl_3 is False)
                 if lcl_2:
                     lcl_2 = _slot_0_check
                 else:
@@ -4795,39 +4828,8 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                     lcl_2 = lcl_3
                 lcl_1 = lcl_2
             elif (lcl_2 == 20):
-                lcl_2 = parse_BoolExpr(prim__state, prim__tokens)
-                _slot_0_check = lcl_2
-                lcl_3 = _slot_0_check[0]
-                lcl_2 = (lcl_3 is False)
-                if lcl_2:
-                    lcl_2 = _slot_0_check
-                else:
-                    lcl_2 = _slot_0_check[1]
-                    lcl_2 = lcl_2
-                    _slot_0 = lcl_2
-                    Lit_a_1 = _slot_0
-                    _slot_local__1 = Lit_a_1
-                    lcl_2 = (True, _slot_local__1)
-                lcl_1 = lcl_2
-            elif (lcl_2 == 21):
                 lcl_2 = parse_List(prim__state, prim__tokens)
                 _slot_0_check = lcl_2
-                lcl_2 = _slot_0_check[0]
-                lcl_2 = (lcl_2 is False)
-                if lcl_2:
-                    lcl_2 = _slot_0_check
-                else:
-                    lcl_3 = _slot_0_check[1]
-                    lcl_3 = lcl_3
-                    _slot_0 = lcl_3
-                    Lit_a_1 = _slot_0
-                    _slot_local__1 = Lit_a_1
-                    lcl_3 = (True, _slot_local__1)
-                    lcl_2 = lcl_3
-                lcl_1 = lcl_2
-            elif (lcl_2 == 18):
-                lcl_2 = parse_SymExpr(prim__state, prim__tokens)
-                _slot_0_check = lcl_2
                 lcl_3 = _slot_0_check[0]
                 lcl_2 = (lcl_3 is False)
                 if lcl_2:
@@ -4840,7 +4842,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                     _slot_local__1 = Lit_a_1
                     lcl_2 = (True, _slot_local__1)
                 lcl_1 = lcl_2
-            elif (lcl_2 == 29):
+            elif (lcl_2 == 28):
                 lcl_2 = parse_NumExpr(prim__state, prim__tokens)
                 _slot_0_check = lcl_2
                 lcl_2 = _slot_0_check[0]
@@ -4871,7 +4873,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                     _slot_local__1 = Lit_a_1
                     lcl_2 = (True, _slot_local__1)
                 lcl_1 = lcl_2
-            elif (lcl_2 == 32):
+            elif (lcl_2 == 31):
                 lcl_2 = parse_ChrExpr(prim__state, prim__tokens)
                 _slot_0_check = lcl_2
                 lcl_2 = _slot_0_check[0]
@@ -4903,7 +4905,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
         return lcl_0
 
     def parse_Match(prim__state, prim__tokens):
-        lcl_0 = 24
+        lcl_0 = 23
         try:
             _py_local_tk = prim__tokens.array[prim__tokens.offset]
             if (_py_local_tk.idint is lcl_0):
@@ -4933,7 +4935,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                 lcl_1 = lcl_1
                 _slot_1 = lcl_1
                 Match_exp_1 = _slot_1
-                lcl_1 = 25
+                lcl_1 = 24
                 try:
                     _py_local_tk = prim__tokens.array[prim__tokens.offset]
                     if (_py_local_tk.idint is lcl_1):
@@ -5004,11 +5006,42 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
         if lcl_0:
             lcl_2 = prim__tokens.array[(prim__tokens.offset + 0)]
             lcl_2 = lcl_2.idint
-            if (lcl_2 == 31):
+            if (lcl_2 == 32):
                 lcl_2 = parse_Lit(prim__state, prim__tokens)
                 _slot_0_check = lcl_2
                 lcl_2 = _slot_0_check[0]
                 lcl_2 = (lcl_2 is False)
+                if lcl_2:
+                    lcl_2 = _slot_0_check
+                else:
+                    lcl_2 = _slot_0_check[1]
+                    lcl_2 = lcl_2
+                    _slot_0 = lcl_2
+                    Nest_hd_1 = _slot_0
+                    _slot_local__1 = Nest_hd_1
+                    lcl_2 = (True, _slot_local__1)
+                lcl_1 = lcl_2
+            elif (lcl_2 == 30):
+                lcl_2 = parse_Lit(prim__state, prim__tokens)
+                _slot_0_check = lcl_2
+                lcl_2 = _slot_0_check[0]
+                lcl_2 = (lcl_2 is False)
+                if lcl_2:
+                    lcl_2 = _slot_0_check
+                else:
+                    lcl_3 = _slot_0_check[1]
+                    lcl_3 = lcl_3
+                    _slot_0 = lcl_3
+                    Nest_hd_1 = _slot_0
+                    _slot_local__1 = Nest_hd_1
+                    lcl_3 = (True, _slot_local__1)
+                    lcl_2 = lcl_3
+                lcl_1 = lcl_2
+            elif (lcl_2 == 18):
+                lcl_2 = parse_Lit(prim__state, prim__tokens)
+                _slot_0_check = lcl_2
+                lcl_3 = _slot_0_check[0]
+                lcl_2 = (lcl_3 is False)
                 if lcl_2:
                     lcl_2 = _slot_0_check
                 else:
@@ -5036,37 +5069,6 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                     lcl_2 = lcl_3
                 lcl_1 = lcl_2
             elif (lcl_2 == 20):
-                lcl_2 = parse_Lit(prim__state, prim__tokens)
-                _slot_0_check = lcl_2
-                lcl_3 = _slot_0_check[0]
-                lcl_2 = (lcl_3 is False)
-                if lcl_2:
-                    lcl_2 = _slot_0_check
-                else:
-                    lcl_2 = _slot_0_check[1]
-                    lcl_2 = lcl_2
-                    _slot_0 = lcl_2
-                    Nest_hd_1 = _slot_0
-                    _slot_local__1 = Nest_hd_1
-                    lcl_2 = (True, _slot_local__1)
-                lcl_1 = lcl_2
-            elif (lcl_2 == 21):
-                lcl_2 = parse_Lit(prim__state, prim__tokens)
-                _slot_0_check = lcl_2
-                lcl_2 = _slot_0_check[0]
-                lcl_2 = (lcl_2 is False)
-                if lcl_2:
-                    lcl_2 = _slot_0_check
-                else:
-                    lcl_3 = _slot_0_check[1]
-                    lcl_3 = lcl_3
-                    _slot_0 = lcl_3
-                    Nest_hd_1 = _slot_0
-                    _slot_local__1 = Nest_hd_1
-                    lcl_3 = (True, _slot_local__1)
-                    lcl_2 = lcl_3
-                lcl_1 = lcl_2
-            elif (lcl_2 == 18):
                 lcl_2 = parse_Lit(prim__state, prim__tokens)
                 _slot_0_check = lcl_2
                 lcl_3 = _slot_0_check[0]
@@ -5120,7 +5122,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                         _slot_local__1 = Nest_hd_1
                         lcl_2 = (True, _slot_local__1)
                 lcl_1 = lcl_2
-            elif (lcl_2 == 29):
+            elif (lcl_2 == 28):
                 lcl_2 = parse_Lit(prim__state, prim__tokens)
                 _slot_0_check = lcl_2
                 lcl_2 = _slot_0_check[0]
@@ -5151,7 +5153,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
                     lcl_3 = (True, _slot_local__1)
                     lcl_2 = lcl_3
                 lcl_1 = lcl_2
-            elif (lcl_2 == 32):
+            elif (lcl_2 == 31):
                 lcl_2 = parse_Lit(prim__state, prim__tokens)
                 _slot_0_check = lcl_2
                 lcl_3 = _slot_0_check[0]
@@ -5237,7 +5239,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
         return lcl_0
 
     def parse_NumCase(prim__state, prim__tokens):
-        lcl_0 = 29
+        lcl_0 = 28
         try:
             _py_local_tk = prim__tokens.array[prim__tokens.offset]
             if (_py_local_tk.idint is lcl_0):
@@ -5264,7 +5266,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
         return lcl_0
 
     def parse_NumExpr(prim__state, prim__tokens):
-        lcl_0 = 29
+        lcl_0 = 28
         try:
             _py_local_tk = prim__tokens.array[prim__tokens.offset]
             if (_py_local_tk.idint is lcl_0):
@@ -5316,7 +5318,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
             if lcl_0:
                 lcl_1 = prim__tokens.array[(prim__tokens.offset + 0)]
                 lcl_1 = lcl_1.idint
-                if (lcl_1 == 31):
+                if (lcl_1 == 30):
                     _py_local_i = prim__tokens.offset
                     _py_local_t = prim__tokens.array[_py_local_i]
                     prim__tokens.offset = (_py_local_i + 1)
@@ -5580,7 +5582,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
         return lcl_0
 
     def parse_StrCase(prim__state, prim__tokens):
-        lcl_0 = 31
+        lcl_0 = 30
         try:
             _py_local_tk = prim__tokens.array[prim__tokens.offset]
             if (_py_local_tk.idint is lcl_0):
@@ -5607,7 +5609,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
         return lcl_0
 
     def parse_StrExpr(prim__state, prim__tokens):
-        lcl_0 = 31
+        lcl_0 = 30
         try:
             _py_local_tk = prim__tokens.array[prim__tokens.offset]
             if (_py_local_tk.idint is lcl_0):
@@ -5634,7 +5636,7 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
         return lcl_0
 
     def parse_SymCase(prim__state, prim__tokens):
-        lcl_0 = 18
+        lcl_0 = 32
         try:
             _py_local_tk = prim__tokens.array[prim__tokens.offset]
             if (_py_local_tk.idint is lcl_0):
@@ -5648,30 +5650,20 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
         lcl_0 = (_slot_0 is None)
         if lcl_0:
             lcl_0 = prim__tokens.offset
-            lcl_0 = (lcl_0, 'quote : not match')
+            lcl_0 = (lcl_0, 'sym not match')
             lcl_0 = prim__cons(lcl_0, prim__nil)
             lcl_0 = lcl_0
             lcl_0 = (False, lcl_0)
         else:
-            lcl_0 = parse_Id(prim__state, prim__tokens)
-            _slot_1_check = lcl_0
-            lcl_0 = _slot_1_check[0]
-            lcl_0 = (lcl_0 is False)
-            if lcl_0:
-                lcl_0 = _slot_1_check
-            else:
-                lcl_1 = _slot_1_check[1]
-                lcl_1 = lcl_1
-                _slot_1 = lcl_1
-                SymCase_a_1 = _slot_1
-                lcl_1 = SymCase(SymCase_a_1)
-                _slot_local__1 = lcl_1
-                lcl_1 = (True, _slot_local__1)
-                lcl_0 = lcl_1
+            SymCase_a_1 = _slot_0
+            lcl_0 = MKSym(SymCase_a_1)
+            lcl_0 = SymCase(lcl_0)
+            _slot_local__1 = lcl_0
+            lcl_0 = (True, _slot_local__1)
         return lcl_0
 
     def parse_SymExpr(prim__state, prim__tokens):
-        lcl_0 = 18
+        lcl_0 = 32
         try:
             _py_local_tk = prim__tokens.array[prim__tokens.offset]
             if (_py_local_tk.idint is lcl_0):
@@ -5685,26 +5677,16 @@ def mk_parser(MKIdent, MKNum, MKStr, MKBool, none, true, false, list, Top, Cons,
         lcl_0 = (_slot_0 is None)
         if lcl_0:
             lcl_0 = prim__tokens.offset
-            lcl_0 = (lcl_0, 'quote : not match')
+            lcl_0 = (lcl_0, 'sym not match')
             lcl_0 = prim__cons(lcl_0, prim__nil)
             lcl_0 = lcl_0
             lcl_0 = (False, lcl_0)
         else:
-            lcl_0 = parse_Id(prim__state, prim__tokens)
-            _slot_1_check = lcl_0
-            lcl_0 = _slot_1_check[0]
-            lcl_0 = (lcl_0 is False)
-            if lcl_0:
-                lcl_0 = _slot_1_check
-            else:
-                lcl_1 = _slot_1_check[1]
-                lcl_1 = lcl_1
-                _slot_1 = lcl_1
-                SymExpr_a_1 = _slot_1
-                lcl_1 = SymExpr(SymExpr_a_1)
-                _slot_local__1 = lcl_1
-                lcl_1 = (True, _slot_local__1)
-                lcl_0 = lcl_1
+            SymExpr_a_1 = _slot_0
+            lcl_0 = MKSym(SymExpr_a_1)
+            lcl_0 = SymExpr(lcl_0)
+            _slot_local__1 = lcl_0
+            lcl_0 = (True, _slot_local__1)
         return lcl_0
 
     def parse_Top(prim__state, prim__tokens):
