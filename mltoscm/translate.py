@@ -4,7 +4,6 @@ from mltoscm.trivial import Visitor, Emit
 import sys
 
 
-@wise
 def s2s(filename: str, out: str):
     with open(filename) as f:
         src = f.read()
@@ -19,5 +18,18 @@ def s2s(filename: str, out: str):
             print(file=f)
 
 
-def cmd():
-    s2s(sys.argv[1:])
+def execute(filename: str):
+    import tempfile
+    import os
+    from subprocess import check_call
+    out = tempfile.mktemp()
+    s2s(filename, out)
+    check_call(["racket", out])
+
+
+def ml2scm():
+    wise(s2s)(sys.argv[1:])
+
+
+def mlscm():
+    wise(execute)(sys.argv[1:])

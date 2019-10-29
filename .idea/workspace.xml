@@ -2,14 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="84b75222-f202-46b6-8f1a-4bdf0e2223a1" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/test/e.ml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mltoscm/ast.gen" beforeDir="false" afterPath="$PROJECT_DIR$/mltoscm/ast.gen" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mltoscm/ast.py" beforeDir="false" afterPath="$PROJECT_DIR$/mltoscm/ast.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mltoscm/parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/mltoscm/parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mltoscm/trivial.py" beforeDir="false" afterPath="$PROJECT_DIR$/mltoscm/trivial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mltoscm/translate.py" beforeDir="false" afterPath="$PROJECT_DIR$/mltoscm/translate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yesml.rbnf" beforeDir="false" afterPath="$PROJECT_DIR$/yesml.rbnf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yesml.rlex" beforeDir="false" afterPath="$PROJECT_DIR$/yesml.rlex" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

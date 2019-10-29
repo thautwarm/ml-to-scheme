@@ -19,7 +19,12 @@ setup(
     author='thautwarm',
     author_email='twshere@outlook.com',
     packages=find_packages(),
-    entry_points={"console_scripts": ["ml2scm=mltoscm.translate:cmd"]},
+    entry_points={
+        "console_scripts": [
+            "ml2scm=mltoscm.translate:ml2scm",
+            "mlscm=mltoscm.translate:mlscm"
+        ]
+    },
     # above option specifies commands to be installed,
     # e.g: entry_points={"console_scripts": ["yapypy=yapypy.cmd.compiler"]}
     install_requires=["rbnf-rts"],

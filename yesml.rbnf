@@ -46,7 +46,7 @@ BoolExpr : !a=('true'|'false') -> BoolExpr(MKBool(a));
 Nest   : '(' !hd=Exp ')'                   -> hd;
 Nest   : !hd=Lit                           -> hd;
 
-Lit     : !a=(Id | SymExpr | NumExpr | StrExpr | ChrExpr | List) -> a;
+Lit     : !a=(Id | SymExpr | BoolExpr | NumExpr | StrExpr | ChrExpr | List) -> a;
 
 List   : '[' !a=CommaExps "||" !tl=Case ']' -> List(MKLRCommaList(a), tl);
 List   : '[' !a=CommaExps ']'              -> List(MKLRCommaList(a), none);
@@ -68,7 +68,7 @@ AndCase     : [AndCase '&'] AtomCase;
 
 CommaCases : [CommaCases ','] Case;
 
-AtomCase    : !a=(NumCase | SymCase | ChrCase | StrCase | ListCase | NestCase | Id) -> a;
+AtomCase    : !a=(NumCase | SymCase | BoolCase | ChrCase | StrCase | ListCase | NestCase | Id) -> a;
 
 SymCase    : ':' !a=Id     -> SymCase(a);
 ChrCase    : !s=<chr>      -> ChrCase(MKStr(s));
