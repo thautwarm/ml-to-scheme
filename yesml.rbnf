@@ -13,11 +13,13 @@ Let   : 'let' !ident=Id '=' !exp=Exp           -> Let(ident, false, exp);
 Open  : 'open' !ident=Id                  -> OpenId(ident);
 Open  : 'open' !string=<str>              -> OpenString(MKStr(string));
 
-Exp   : !it=(App | LetExp) -> it;
+Exp   : !it=(App | LetExp | IfExp)           -> it;
+Exp   : !left=Exp '`' !op=Id '`' !right=Exp  -> App(op, Tuple2(left, right));
 
 CommaExps : [CommaExps ','] Exp;
 
 LetExp : !let=Let 'in' !exp=Exp                  -> LetExp(let, exp);
+IfExp  : 'if' !cond=Exp 'then' !tC=Exp 'else' !fC=Exp -> IfExp(cond, tC, fC);
 
 App     : !a=AtomExp                               -> a;
 App     : !f=App '(' !args=CommaExps ')'           -> App(f, MKLRCommaList(args));

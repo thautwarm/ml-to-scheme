@@ -75,6 +75,13 @@ class Visitor:
         return self.the_exp(do.exp)
 
     @the_exp.register
+    def the_if_exp(self, ifexp: IfExp):
+        cond = self.the_exp(ifexp.cond)
+        tc = self.the_exp(ifexp.tc)
+        fc = self.the_exp(ifexp.fc)
+        return Symbol("if"), cond, tc, fc
+
+    @the_exp.register
     def the_let_exp(self, let_exp: LetExp):
         ident = let_exp.stmt.ident
         bound = let_exp.stmt.exp

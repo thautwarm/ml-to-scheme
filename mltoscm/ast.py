@@ -88,6 +88,14 @@ class LetExp(Exp):
 
 
 @dataclass(frozen=True, order=True)
+class IfExp(Exp):
+    cond:Exp
+    tc:Exp
+    fc:Exp
+    pass
+
+
+@dataclass(frozen=True, order=True)
 class App(Exp):
     f:Exp
     args:t.List[Exp]

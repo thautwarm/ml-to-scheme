@@ -20,10 +20,15 @@ def s2s(filename: str, out: str):
 
 def execute(filename: str):
     import tempfile
+    from pathlib import Path
     from subprocess import check_call
-    out = tempfile.mktemp(suffix='.rkt')
-    s2s(filename, out)
-    check_call(["racket", out])
+    cur = Path(".").absolute()
+    out = tempfile.mktemp(suffix='.rkt', dir=str(cur))
+    try:
+        s2s(filename, out)
+        check_call(["racket", out])
+    finally:
+        Path(out).unlink()
 
 
 def ml2scm():
