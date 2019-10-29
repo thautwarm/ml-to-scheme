@@ -20,9 +20,8 @@ def s2s(filename: str, out: str):
 
 def execute(filename: str):
     import tempfile
-    import os
     from subprocess import check_call
-    out = tempfile.mktemp()
+    out = tempfile.mktemp(suffix='.rkt')
     s2s(filename, out)
     check_call(["racket", out])
 
