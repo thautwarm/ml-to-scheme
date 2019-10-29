@@ -11,7 +11,7 @@ abc Case(AST);
 
 data Top(AST) stmts:t.List[Stmt];
 
-data Let(Stmt) ident:Ident exp:Exp;
+data Let(Stmt) ident:Ident is_rec:bool exp:Exp;
 data OpenString(Stmt) path:Str;
 data OpenId(Stmt) ident:Ident;
 data Do(Stmt) exp:Exp;

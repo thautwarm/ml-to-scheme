@@ -7,10 +7,11 @@ Stmts    : !a=Stmt !b=Stmts -> Cons(a, b);
 Stmt  : !it=(Let | Do | Open) -> it;
 
 Do    : 'do' !exp=Exp                    -> Do(exp);
-Let   : 'let' !ident=Id '=' !exp=Exp     -> Let(ident, exp);
+Let   : 'let' 'rec' !ident=Id '=' !exp=Exp     -> Let(ident, true, exp);
+Let   : 'let' !ident=Id '=' !exp=Exp           -> Let(ident, false, exp);
 
 Open  : 'open' !ident=Id                  -> OpenId(ident);
-Open  : 'open' !string=<str>             -> OpenString(MKStr(string));
+Open  : 'open' !string=<str>              -> OpenString(MKStr(string));
 
 Exp   : !it=(App | LetExp) -> it;
 

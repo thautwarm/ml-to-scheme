@@ -79,8 +79,12 @@ class Visitor:
         ident = let_exp.stmt.ident
         bound = let_exp.stmt.exp
         block = let_exp.exp
-        return sym.let, [(Symbol(ident.ident), self.the_exp(bound))
-                         ], self.the_exp(block)
+        if let_exp.stmt.is_rec:
+            head = sym.letrec
+        else:
+            head = sym.let
+        return head, [(Symbol(ident.ident), self.the_exp(bound))
+                      ], self.the_exp(block)
 
     @the_exp.register
     def the_app(self, app: App):

@@ -57,6 +57,7 @@ class Top(AST):
 @dataclass(frozen=True, order=True)
 class Let(Stmt):
     ident:Ident
+    is_rec:bool
     exp:Exp
     pass
 

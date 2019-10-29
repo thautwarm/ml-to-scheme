@@ -27,7 +27,7 @@ identifier [^\(\)\"\s,\'\[\]\|\:]+
 %require App
 %require Lam
 
-$require BoolExpr
+%require BoolExpr
 %require SymExpr
 %require ChrExpr
 %require StrExpr
@@ -43,7 +43,7 @@ $require BoolExpr
 %require MKOrCase
 %require MKAndCase
 
-$require BoolCase
+%require BoolCase
 %require NumCase
 %require SymCase
 %require StrCase
