@@ -10,17 +10,17 @@
    (lambda (x)
       (match x
          [(list
-  (or 'left 'right)
-  _) true]
-         [_ false])))
+           (or 'left 'right)
+           _) #t]
+         [_ #f])))
 (define either2?
    (lambda (x)
       (match x
          [(list a _) #:when
             (member a
                (list 'left 'right))
-            true]
-         [_ false])))
+            #t]
+         [_ #f])))
 (println
   (either?
     (right 1)))

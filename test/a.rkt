@@ -5,6 +5,6 @@
       (+ x 2)))
 (define main
    (lambda ()
-      (let [(x
-  (add2 1))]
+      (let [[x
+         (add2 1)]]
          (* 2 x))))
