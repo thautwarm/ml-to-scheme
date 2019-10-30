@@ -223,22 +223,24 @@ indent_tokens = {"match", "if", "let", "define", "lambda", "begin"}
 
 @contextmanager
 def no_indent(self: 'Emit'):
-    ind = self.indent
-    self.indent = 0
+    no_ind = self.no_indent
+    self.no_indent = True
     try:
         yield
     finally:
-        self.indent = ind
+        self.no_indent = no_ind
 
 
 class Emit:
     def __init__(self, io=None):
         self.indent = 0
+        self.no_indent = False
         self.io = (io or sys.stdout).write
 
     @cls_dispatch
     def emit(self, n):
-        self.io(' ' * self.indent)
+        if not self.no_indent:
+            self.io(' ' * self.indent)
         if isinstance(n, str):
             self.io('"' + n.replace('"', '\\"') + '"')
             return
@@ -261,19 +263,23 @@ class Emit:
         self.indent += 2
         for each in tl:
             self.io('\n')
+            self.no_indent = False
             self.emit(each)
         self.indent = ind
 
     @emit.register
     def emit_tp(self, n: tuple):
-        self.io(' ' * self.indent)
+        if not self.no_indent:
+            self.io(' ' * self.indent)
         self.io("(")
         self.emit_seq(n)
         self.io(")")
 
     @emit.register
     def emit_lst(self, n: list):
-        self.io(' ' * self.indent)
+        if not self.no_indent:
+            self.io(' ' * self.indent)
+
         self.io("[")
         self.emit_seq(n)
         self.io("]")

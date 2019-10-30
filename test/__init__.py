@@ -26,7 +26,8 @@ let add2 = fn (x) -> +(x,  2)
 let main = fn () ->
     println 1;
     let x = add2 1
-    in *(2, x)
+    in [*(2, x)#[1, 2]];
+    [1#x]
     
 """)
 

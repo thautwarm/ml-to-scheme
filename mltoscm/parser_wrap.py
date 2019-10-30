@@ -13,7 +13,7 @@ _parse = mk_parser(**{arg: getattr(parsing_required, arg) for arg in argnames})
 Errors = Tuple[Literal[False], List[Tuple[int, str]]]
 Parsed = Tuple[Literal[True], AST]
 
-comment = re.compile(r"#[^\n]*")
+comment = re.compile(r"//[^\n]*")
 
 
 def parse(text: str, filename: str = "unknown") -> Union[Parsed, Errors]:
