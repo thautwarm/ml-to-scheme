@@ -37,7 +37,8 @@ let x =
 
 let x =
     let rec y = 1 and x = 1
-    in [z, x, y]
+    in [z, x, y # z];
+    +(1, 2)
 """)
 
 assert isinstance(a, AST) and a.tag == "START"

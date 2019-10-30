@@ -2,6 +2,7 @@ from mltoscm.ast import *
 from types import FunctionType
 from dataclasses import dataclass
 from contextlib import contextmanager
+from functools import reduce
 import sys
 
 
@@ -50,7 +51,7 @@ class Visitor:
 
     @cls_dispatch
     def the_exp(self, n: Exp):
-        raise NotImplementedError
+        raise NotImplementedError(n)
 
     @cls_dispatch
     def the_case(self, n: Case):
@@ -173,10 +174,13 @@ class Visitor:
 
     @the_exp.register
     def the_list(self, n: List):
-        base = (sym.list, *map(self.the_exp, n.elts))
         if n.tl is None:
-            return base
-        return sym.cons, base, self.the_exp(n.tl)
+            return (sym.list, *map(self.the_exp, n.elts))
+
+        *init, end = n.elts
+        begin = (sym.cons, self.the_exp(end), self.the_exp(n.tl))
+        return reduce(lambda n, each: (sym.cons, self.the_exp(each), n), init,
+                      begin)
 
     @the_case.register
     def the_or(self, n: OrCase):
@@ -223,7 +227,7 @@ class Visitor:
         return (Symbol("list-rest"), *elts, self.the_case(tl))
 
 
-indent_tokens = {"match", "if", "let", "define", "lambda", "begin"}
+indent_tokens = {"match", "if", "let", "define", "lambda"}
 
 
 @contextmanager

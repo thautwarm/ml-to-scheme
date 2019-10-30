@@ -3,9 +3,9 @@ open "./utils.rkt"
 open "./artc-semantic-domain.rkt"
 
 let in-range? = fun (x, low, high) ->
-	let low  = char->integer low in
-	let high = char->integer high in
-	let x    = char->integer x in
+	let low  = char->integer low
+	and high = char->integer high
+	and x    = char->integer x in
 	low `<=` x && high `>=` x
 
 
@@ -36,45 +36,65 @@ let keywords = [
 	":="
 ]
 
-let mk-check-ctx = fun () -> cons(typemap-create(), state-create())
+let mk-check-ctx = fun () -> [typemap-create(), state-create(), []]
 
 let ctx-type-of = fun (ctx, var) ->
 	typemap-type-of(car ctx, var)
 
 let ctx-decl = fun (ctx, var, ty) ->
 	let tenv = typemap-add(car ctx, var, ty)
-	and st   = state-add(cdr ctx, var) in
-	cons(tenv, st)
+	and st   = state-add(second ctx, var)
+	and eff  = third ctx in
+	[tenv, st, eff]
 
 let ctx-decl? = fun (ctx, var) ->
 	typemap-contains(car ctx, var)
 
 let ctx-init? = fun (ctx, var) ->
-	not(state-get-value(cdr ctx, var) `member` [:undefined, :error])
+	not(state-get-value(second ctx, var) `member` [:undefined, :error])
 
 let ctx-with-tenv = fun (ctx, tenv) ->
-	cons(tenv, cdr ctx)
+	[tenv, second ctx, third ctx]
 
 let ctx-with-vars = fun (ctx, vars) ->
-	cons(car ctx, vars)
+	[car ctx, vars, third ctx]
 
-let ctx-tenv = fun ctx -> car ctx
-let ctx-vars = fun ctx -> cdr ctx
+let ctx-with-eff = fun (ctx, eff) ->
+	[car ctx, second ctx, eff]
+
+let ctx-tenv = car
+let ctx-vars = second
+let ctx-eff  = third
+
+let add-effect = fun (ctx, var) ->
+	if var `member` ctx-eff ctx
+	then ctx
+	else ctx-with-eff(ctx, [var # ctx-eff ctx])
+
+let rm-effect = fun (eff, var) ->
+	let rec rm = fun xs ->
+		match xs with
+		| [] -> []
+		| [hd#tl] when hd `equal?` var -> rm tl
+		| [hd#tl] -> [hd#rm tl]
+	in rm eff
 
 let ctx-mutate = fun (ctx, var, val) ->
 	if state-get-value(ctx-vars ctx, var) `equal?` :error
 	then
 		error(format("~a not declared", var))
 	else
-		ctx-with-vars(ctx, state-update(ctx-vars ctx, var, val))
+	let ctx = add-effect(ctx, var)
+	in ctx-with-vars(ctx, state-update(ctx-vars ctx, var, val))
 
 let ctx-val-of = fun (ctx, var) ->
-	state-get-value(cdr ctx, var)
+	state-get-value(second ctx, var)
 
 let ctx-delete = fun (ctx, var) ->
 	let tenv = typemap-delete(ctx-tenv ctx, var)
-	and st   = state-delete(ctx-vars ctx, var) in
-	cons(tenv, st)
+	and st   = state-delete(ctx-vars ctx, var)
+	and eff  = rm-effect(ctx-eff ctx, var)
+	in [tenv, st, eff]
 
 let not-decl = fun x ->
 	match x with
@@ -93,11 +113,6 @@ let expr-val = fun expr ->
 	match expr with
 	| [:expr, val, _] -> val
 	| _ -> error(format("expect an expression, got ~a", expr))
-
-let second = fun xs ->
-	match xs with
-	| [_, e#_] -> e
-	| _ -> error("not inbound")
 
 
 let forM = fun f -> fun ctx -> fun xs ->
@@ -118,6 +133,69 @@ let forM_ = fun f -> fun ctx -> fun xs ->
 		let hdM = f ctx hd in
 		apply(tl, second hdM)
 	in apply(xs, ctx)
+
+let par-forM_ = fun f -> fun ctx -> fun xs ->
+	let rec apply = fun xs ->
+		match xs with
+		| [] -> []
+		| [hd#tl] ->
+		let hdM = f ctx hd in
+		[second hdM # apply tl]
+	in apply xs
+
+let union-list = fun (x1, x2) ->
+	match x1 with
+	| [] -> x2
+	| [hd#tl] when hd `member` x2 -> union-list(tl, x2)
+	| [hd#tl]                     -> union-list(tl, [hd#x2])
+
+let repr_lst = fun xs ->
+	let rec r = fun xs -> match xs with
+	| [] -> ""
+	| [hd#tl] -> string-append(format("~a, ", hd), r tl)
+	in r xs
+
+let merge-sts = fun (base, ctxs, eff) ->
+	let compare-st = foldl(fun (a, st) -> state-add(st, a) end, state-create(), eff) in
+//	printf("comp ~a\n", repr_lst compare-st);
+	let rec apply =
+		fun (ctxs, base, compare-st) ->
+			match ctxs with
+			| [] -> base
+			| [[_, st, eff]#tl_ctxs] ->
+			//	printf("start\n");
+			//	printf("st ~a\n", repr_lst st);
+				let rec merge-st = fun (vars, base, compare-st) ->
+			//		printf("vars ~a\n", repr_lst vars);
+			//		printf("base ~a\n", repr_lst base);
+			//		printf("comp ~a\n", repr_lst compare-st);
+
+
+					match vars with
+					| [] -> [base, compare-st]
+					| [var#tl] ->
+						match state-get-value(compare-st, var) with
+						| :undefined ->
+							let val = state-get-value(st, var) in
+							let compare-st = state-update(compare-st, var, val)
+							and base = state-update(base, var, val) in
+//							printf("~a | ~a | ~a | ~a\n", var, repr_lst compare-st, repr_lst base, repr_lst st);
+							merge-st(tl, base, compare-st)
+						| val ->
+							if state-get-value(st, var) `equal?` val
+							then
+								merge-st(tl, base, compare-st)
+							else
+								error(format("variable ~a conflicts when parallel", var))
+						end
+					end
+				in
+				let pack = merge-st(eff, base, compare-st) in
+				let base = car pack
+				and compare-st = second pack in
+				apply(tl_ctxs, base, compare-st)
+
+	in apply(ctxs, base, compare-st)
 
 let not-equal? = fun (a, b) -> not (a `equal?` b)
 
@@ -149,39 +227,39 @@ let interpret-program = fun prog ->
 			then
 				error(format("~a not initialized yet", var))
 			else
-			let ty = ctx-type-of(ctx, var) in
-			let val = ctx-val-of(ctx, var) in
+			let ty = ctx-type-of(ctx, var)
+			and val = ctx-val-of(ctx, var) in
 			mk-expr(val, ty)
 		| i when integer? i ->
 			mk-expr(i, :int)
 		| [op & (:+ | :- | :* | :/ | :@ | :?), a, b] ->
-			let a = interpret-expr ctx a in
-			let b = interpret-expr ctx b in
-			let func = iii_func op in
-			assert(expr-type a `equal?` :int, "lhs here must be int");
-			assert(expr-type b `equal?` :int, "rhs here must be int");
+			let a = interpret-expr ctx a
+			and b = interpret-expr ctx b
+			and func = iii_func op in
+			let _0 = assert(expr-type a `equal?` :int, "lhs here must be int") and
+			    _1 = assert(expr-type b `equal?` :int, "rhs here must be int") in
 			mk-expr(expr-val a `func` expr-val b, :int)
 		| [op & (:< | :> | :(=) | :(<=) | :(>=)), a, b] ->
-			let a = interpret-expr ctx a in
-			let b = interpret-expr ctx b in
-			let func = iib_func op in
-			assert(expr-type a `equal?` :int, "lhs here must be int");
-			assert(expr-type b `equal?` :int, "rhs here must be int");
+			let a = interpret-expr ctx a
+			and b = interpret-expr ctx b
+			and func = iib_func op in
+			let _0 = assert(expr-type a `equal?` :int, "lhs here must be int") and
+				_1 = assert(expr-type b `equal?` :int, "rhs here must be int") in
 			mk-expr(expr-val a `func` expr-val b, :boolean)
 		| [op & (:& | :%), a, b] ->
-			let a = interpret-expr ctx a in
-			let b = interpret-expr ctx b in
-			let func = bbb_func op in
-			assert(expr-type a `equal?` :boolean, "lhs here must be boolean");
-			assert(expr-type b `equal?` :boolean, "rhs here must be boolean");
+			let a = interpret-expr ctx a
+			and b = interpret-expr ctx b
+			and func = bbb_func op in
+			let _0 = assert(expr-type a `equal?` :boolean, "lhs here must be boolean") and
+				_1 = assert(expr-type b `equal?` :boolean, "rhs here must be boolean") in
 			mk-expr(expr-val a `func` expr-val b, :boolean)
 		| [:~, a] ->
 			let a = interpret-expr ctx a in
-			assert(expr-type a `equal?` :boolean, "operand here must be boolean");
+			let _ = assert(expr-type a `equal?` :boolean, "operand here must be boolean") in
 			mk-expr(not (expr-val a), :boolean)
 		| [:-, a] ->
 			let a = interpret-expr ctx a in
-			assert(expr-type a `equal?` :int, "operand here must be int");
+			let _ = assert(expr-type a `equal?` :int, "operand here must be int") in
 			mk-expr(-(expr-val a), :int)
 
 	in let rec interpret-stmt =
@@ -212,11 +290,10 @@ let interpret-program = fun prog ->
 			let bodies = drop-until(not-decl, stmts) in
 			match forM (check :declare interpret-stmt) ctx decls with
 			| [entered-vars, ctx] ->
-
 				let interp-with-check = fun ctx -> fun node ->
 
 					if list? node && car node `member`
-						[:block, :(:=), :if, :while, :sprint]
+						[:block, :(:=), :if, :while, :sprint, :parallel]
 					then
 						interpret-stmt ctx node
 					else
@@ -227,6 +304,20 @@ let interpret-program = fun prog ->
 				[:ok, ctx]
 			| _ ->  error("malformed program")
 			end
+		| [:parallel # stmts] ->
+			let checkstmt = fun ctx -> fun node ->
+				if list? node && car node `member` [:block, :(:=), :if, :while, :sprint, :parallel]
+				then
+					interpret-stmt ctx node
+				else
+					error(format("expected a statement, got ~a", node))
+			in
+			let ctxs = par-forM_ checkstmt ctx stmts in
+			let eff = foldl(union-list, [], map(ctx-eff, ctxs)) in
+			let vars = merge-sts(ctx-vars ctx, ctxs, eff) in
+			let ctx = ctx-with-vars(ctx, vars) in
+			[:ok, ctx-with-eff(ctx, eff)]
+
 		| [:declare, ty, var] ->
 			if not (symbol? ty && symbol? var && valid-var? var)
 			then
@@ -289,13 +380,8 @@ let interpret-program = fun prog ->
 					error("malformed while statement")
 			in loop ctx
 		| [:sprint, format] ->
-			print(format);
-			println(ctx-vars ctx);
 			[:ok, ctx]
 		| [:sprint, format, exp] ->
-			let exp = interpret-expr ctx exp in
-			print(format);
-			println(expr-val exp);
 			[:ok, ctx]
 
 	in ctx-vars(second(interpret-stmt ctx prog))
