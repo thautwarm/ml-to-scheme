@@ -23,12 +23,17 @@ for each in asts:
 a = parse("""
 let add2 = fn (x) -> +(x,  2)
 
-let main = fn () ->
+let main = fun () ->
     println 1;
     let x = add2 1
     in [*(2, x)#[1, 2]];
     [1#x]
-    
+
+let x =
+    let z = 1
+    and b = 2
+    and c = 3
+    in z + b + c
 """)
 
 assert isinstance(a, AST) and a.tag == "START"

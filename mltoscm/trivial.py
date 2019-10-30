@@ -58,8 +58,10 @@ class Visitor:
 
     @the_stmt.register
     def the_let(self, let: Let):
-        ident = let.ident
-        exp = let.exp
+        assert len(let.let_seq) is 1
+        let_seq = let.let_seq
+        ident = let_seq[0].ident
+        exp = let_seq[0].exp
         return sym.define, Symbol(ident.ident), self.the_exp(exp)
 
     @the_stmt.register
@@ -89,15 +91,18 @@ class Visitor:
 
     @the_exp.register
     def the_let_exp(self, let_exp: LetExp):
-        ident = let_exp.stmt.ident
-        bound = let_exp.stmt.exp
-        block = let_exp.exp
-        if let_exp.stmt.is_rec:
+        is_rec = let_exp.stmt.is_rec
+        if is_rec:
             head = sym.letrec
         else:
             head = sym.let
-        return head, [(Symbol(ident.ident), self.the_exp(bound))
-                      ], self.the_exp(block)
+        binds = []
+        for each in let_exp.stmt.let_seq:
+            ident = each.ident
+            bound = each.exp
+            binds.append([Symbol(ident.ident), self.the_exp(bound)])
+
+        return head, binds, self.the_exp(let_exp.exp)
 
     @the_exp.register
     def the_and(self, and_: And):

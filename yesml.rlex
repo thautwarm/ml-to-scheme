@@ -24,7 +24,10 @@ identifier [^\(\)\"\s,\'\[\]\|\&\`\;\#]+
 %require Cons
 %require nil
 %require MKLRList
+
 %require Let
+%require Bind
+
 %require Do
 %require OpenString
 %require OpenId

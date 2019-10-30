@@ -55,10 +55,16 @@ class Top(AST):
 
 
 @dataclass(frozen=True, order=True)
-class Let(Stmt):
+class Bind:
     ident:Ident
-    is_rec:bool
     exp:Exp
+    pass
+
+
+@dataclass(frozen=True, order=True)
+class Let(Stmt):
+    let_seq:t.List[Bind]
+    is_rec:bool
     pass
 
 

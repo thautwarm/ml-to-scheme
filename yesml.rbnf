@@ -7,13 +7,16 @@ Stmts    : !a=Stmt !b=Stmts -> Cons(a, b);
 Stmt  : !it=(Let | Do | Open) -> it;
 
 Do    : 'do' !exp=Exp                    -> Do(exp);
-Let   : 'let' 'rec' !ident=Id '=' !exp=Exp     -> Let(ident, true, exp);
-Let   : 'let' !ident=Id '=' !exp=Exp           -> Let(ident, false, exp);
+Let   : 'let' 'rec' !it=LetSeq           -> Let(MKLRCommaList(it), true);
+Let   : 'let' !it=LetSeq                 -> Let(MKLRCommaList(it), false);
+
+Bind   : !ident=Id '=' !exp=Exp          -> Bind(ident, exp);
+LetSeq : [LetSeq 'and'] Bind;
 
 Open  : 'open' !ident=Id                  -> OpenId(ident);
 Open  : 'open' !string=<str>              -> OpenString(MKStr(string));
 
-Exp      : !it=BlockExp                 -> BlockExpr(MKLRCommaList(it));
+Exp      : !it=BlockExp                  -> BlockExpr(MKLRCommaList(it));
 
 BlockExp : [BlockExp ';'] OrExp;
 
@@ -38,9 +41,9 @@ App     : !f=App !arg=Lit                           -> App(f, Tuple1(arg));
 
 AtomExp : !it=(Lam | Match | Nest)                  -> it;
 
-Lam     : 'fn' '(' !args=CommaIds ')' '->' !exp=Exp ['end'] -> Lam(MKLRCommaList(args), exp);
-Lam     : 'fn' !arg=Id '->' !exp=Exp ['end']                 -> Lam(Tuple1(arg), exp);
-Lam     : 'fn' '(' ')' '->' !exp=Exp ['end']                -> Lam(Tuple0, exp);
+Lam     : ('fn' | 'fun') '(' !args=CommaIds ')' '->' !exp=Exp ['end'] -> Lam(MKLRCommaList(args), exp);
+Lam     : ('fn' | 'fun') !arg=Id '->' !exp=Exp ['end']                 -> Lam(Tuple1(arg), exp);
+Lam     : ('fn' | 'fun') '(' ')' '->' !exp=Exp ['end']                -> Lam(Tuple0, exp);
 
 Id      : !a=<identifier>  -> MKIdent(a);
 Ids     : !hd=Id           -> Cons(hd, nil);
