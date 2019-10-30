@@ -2,17 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="84b75222-f202-46b6-8f1a-4bdf0e2223a1" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/run.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/cs421.ml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/a.rkt" beforeDir="false" afterPath="$PROJECT_DIR$/test/a.rkt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/b.ml" beforeDir="false" afterPath="$PROJECT_DIR$/test/b.ml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/c.rkt" beforeDir="false" afterPath="$PROJECT_DIR$/test/c.rkt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/d.ml" beforeDir="false" afterPath="$PROJECT_DIR$/test/d.ml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/d.rkt" beforeDir="false" afterPath="$PROJECT_DIR$/test/d.rkt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/e.rkt" beforeDir="false" afterPath="$PROJECT_DIR$/test/e.rkt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/f.rkt" beforeDir="false" afterPath="$PROJECT_DIR$/test/f.rkt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
